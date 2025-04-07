@@ -1,19 +1,15 @@
 <?php
 session_start();
 require '../includes/db.php';
-require '../libs/tfpdf/tfpdf.php'; // ✅ Path to tfpdf.php
 require '../includes/auth.php';
-requireRole('admin'); // or 'branch'
+requireRole('admin');
 
-
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    die("Access denied");
-}
+require('../libs/tfpdf/tfpdf.php');
 
 $filter = $_GET['filter'] ?? 'daily';
 $branch_filter = $_GET['branch'] ?? 'all';
 
-// 🔍 Time filter
+// Build dynamic query
 $date_filter = "";
 switch ($filter) {
     case 'weekly':
@@ -22,86 +18,73 @@ switch ($filter) {
     case 'monthly':
         $date_filter = "AND MONTH(sold_at) = MONTH(CURDATE()) AND YEAR(sold_at) = YEAR(CURDATE())";
         break;
-    default:
+    default: // daily
         $date_filter = "AND DATE(sold_at) = CURDATE()";
         break;
 }
 
-$query = "SELECT 
-            branches.name AS branch, 
-            products.name AS product, 
-            sales.quantity, 
-            sales.price_each, 
-            sales.total_price, 
-            sales.sold_at 
+$query = "SELECT sales.*, products.name AS product_name, branches.name AS branch_name 
           FROM sales 
           JOIN products ON sales.product_id = products.id 
           JOIN branches ON sales.branch_id = branches.id 
           WHERE 1=1 ";
 
 $params = [];
-$types = "";
 
+// Add branch filter
 if ($branch_filter !== 'all') {
-    $query .= " AND sales.branch_id = ? ";
+    $query .= " AND sales.branch_id = ?";
     $params[] = $branch_filter;
-    $types .= "i";
 }
 
 $query .= " $date_filter ORDER BY sales.sold_at DESC";
-
 $stmt = $conn->prepare($query);
-if (!empty($params)) {
-    $stmt->bind_param($types, ...$params);
+
+// Bind values
+foreach ($params as $index => $param) {
+    $stmt->bindValue($index + 1, $param, PDO::PARAM_INT);
 }
+
 $stmt->execute();
-$result = $stmt->get_result();
+$sales = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-
-// ✅ Initialize TFPDF
-$pdf = new tFPDF('L', 'mm', 'A4');
+// Create PDF
+$pdf = new tFPDF();
 $pdf->AddPage();
+$pdf->AddFont('DejaVu','','DejaVuSans.ttf',true);
+$pdf->SetFont('DejaVu','',12);
 
-// 🔤 Load a Unicode font (Roboto or FreeSerif)
-$pdf->AddFont('FreeSerif', '', 'FreeSerif.php');
-$pdf->SetFont('FreeSerif', '', 12);
-
-// 📄 Title
-$pdf->Cell(0, 10, 'Sales Report', 0, 1, 'C');
+// Title
+$pdf->Cell(0, 10, '🧾 Sales Report', 0, 1, 'C');
 $pdf->Ln(5);
 
-// 🧾 Table headers
-$pdf->SetFont('FreeSerif', 'B', 11);
-$pdf->Cell(40, 10, 'Branch', 1);
-$pdf->Cell(50, 10, 'Product', 1);
-$pdf->Cell(20, 10, 'Qty', 1);
-$pdf->Cell(30, 10, 'Price (RWF)', 1);
-$pdf->Cell(35, 10, 'Total (RWF)', 1);
-$pdf->Cell(45, 10, 'Date', 1);
-$pdf->Ln();
+// Table Headers
+$pdf->SetFont('DejaVu','',10);
+$pdf->SetFillColor(230, 230, 230);
+$pdf->Cell(30, 10, 'Branch', 1, 0, 'C', true);
+$pdf->Cell(40, 10, 'Product', 1, 0, 'C', true);
+$pdf->Cell(15, 10, 'Qty', 1, 0, 'C', true);
+$pdf->Cell(30, 10, 'Price Each', 1, 0, 'C', true);
+$pdf->Cell(30, 10, 'Total', 1, 0, 'C', true);
+$pdf->Cell(40, 10, 'Sold At', 1, 1, 'C', true);
 
-// 🔁 Loop through results
-$pdf->SetFont('FreeSerif', '', 11);
 $total_sales = 0;
 
-while ($row = $result->fetch_assoc()) {
-    $pdf->Cell(40, 10, $row['branch'], 1);
-    $pdf->Cell(50, 10, $row['product'], 1);
-    $pdf->Cell(20, 10, $row['quantity'], 1, 0, 'C');
+foreach ($sales as $row) {
+    $pdf->Cell(30, 10, $row['branch_name'], 1);
+    $pdf->Cell(40, 10, $row['product_name'], 1);
+    $pdf->Cell(15, 10, $row['quantity'], 1, 0, 'C');
     $pdf->Cell(30, 10, number_format($row['price_each'], 2), 1, 0, 'R');
-    $pdf->Cell(35, 10, number_format($row['total_price'], 2), 1, 0, 'R');
-    $pdf->Cell(45, 10, $row['sold_at'], 1);
-    $pdf->Ln();
-
+    $pdf->Cell(30, 10, number_format($row['total_price'], 2), 1, 0, 'R');
+    $pdf->Cell(40, 10, $row['sold_at'], 1, 1);
     $total_sales += $row['total_price'];
 }
 
-// ➕ Total
-$pdf->SetFont('FreeSerif', 'B', 12);
-$pdf->Cell(140, 10, 'Total Sales', 1);
-$pdf->Cell(35, 10, number_format($total_sales, 2), 1, 0, 'R');
-$pdf->Cell(45, 10, 'RWF', 1);
-$pdf->Ln();
+// Total
+$pdf->SetFont('DejaVu','',11);
+$pdf->Cell(115, 10, 'Total Sales', 1, 0, 'R', true);
+$pdf->Cell(30, 10, number_format($total_sales, 2), 1, 0, 'R', true);
+$pdf->Cell(40, 10, 'RWF', 1, 1, 'C', true);
 
 $pdf->Output('D', 'sales_report.pdf');
 exit;

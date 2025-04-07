@@ -5,7 +5,6 @@ require_once 'navbar.php';
 require '../includes/auth.php';
 requireRole('admin'); // or 'branch'
 
-
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../login.php");
     exit;
@@ -36,24 +35,22 @@ $query = "SELECT sales.*, products.name AS product_name, branches.name AS branch
           WHERE 1=1 ";
 
 $params = [];
-$types = "";
 
 // Add branch filter if set
 if ($branch_filter !== 'all') {
     $query .= " AND sales.branch_id = ? ";
     $params[] = $branch_filter;
-    $types .= "i";
 }
 
 // Add date filter
 $query .= " $date_filter ORDER BY sales.sold_at DESC";
 
 $stmt = $conn->prepare($query);
-if (!empty($params)) {
-    $stmt->bind_param($types, ...$params);
+foreach ($params as $index => $param) {
+    $stmt->bindValue($index + 1, $param, PDO::PARAM_INT);
 }
 $stmt->execute();
-$result = $stmt->get_result();
+$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Get all branches for dropdown
 $branches = $conn->query("SELECT id, name FROM branches");
@@ -76,7 +73,7 @@ $total_sales = 0;
       <label>Filter By Branch</label>
       <select name="branch" class="form-select">
         <option value="all">All Branches</option>
-        <?php while ($b = $branches->fetch_assoc()): ?>
+        <?php while ($b = $branches->fetch(PDO::FETCH_ASSOC)): ?>
           <option value="<?= $b['id'] ?>" <?= ($branch_filter == $b['id']) ? 'selected' : '' ?>>
             <?= htmlspecialchars($b['name']) ?>
           </option>
@@ -95,11 +92,11 @@ $total_sales = 0;
       <button class="btn btn-primary w-100">Apply</button>
     </div>
     <a href="export_sales_csv.php?filter=<?= $filter ?>&branch=<?= $branch_filter ?>" class="btn btn-success mb-3">
-  📥 Download CSV
-  </a>
-<a href="export_sales_pdf.php?filter=<?= $filter ?>&branch=<?= $branch_filter ?>" class="btn btn-danger mb-3">
-  📄 Download PDF
-</a>
+      📥 Download CSV
+    </a>
+    <a href="export_sales_pdf.php?filter=<?= $filter ?>&branch=<?= $branch_filter ?>" class="btn btn-danger mb-3">
+      📄 Download PDF
+    </a>
   </form>
 
   <table class="table table-bordered table-striped">
@@ -114,7 +111,7 @@ $total_sales = 0;
       </tr>
     </thead>
     <tbody>
-      <?php while ($row = $result->fetch_assoc()): 
+      <?php foreach ($result as $row): 
           $total_sales += $row['total_price'];
       ?>
         <tr>
@@ -125,7 +122,7 @@ $total_sales = 0;
           <td><?= number_format($row['total_price'], 2) ?></td>
           <td><?= $row['sold_at'] ?></td>
         </tr>
-      <?php endwhile; ?>
+      <?php endforeach; ?>
     </tbody>
     <tfoot>
       <tr>
