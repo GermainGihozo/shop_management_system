@@ -1,26 +1,40 @@
 <?php
 session_start();
 require '../includes/db.php';
-require_once 'navbar.php';
+require 'navbar.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'branch') {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'branch') {
     header("Location: ../login.php");
     exit;
 }
 
+$branch_id = $_SESSION['branch_id'];
+$message = "";
+
+// Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = $_POST['name'];
+    $name = trim($_POST['name']);
     $price = floatval($_POST['price']);
     $quantity = intval($_POST['quantity']);
-    $low_stock_threshold = intval($_POST['low_stock_threshold']);
-    $branch_id = $_SESSION['branch_id'];
 
-    $stmt = $conn->prepare("INSERT INTO products (branch_id, name, price, quantity, low_stock_threshold) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("isdii", $branch_id, $name, $price, $quantity, $low_stock_threshold);
-    $stmt->execute();
+    if ($name && $price > 0 && $quantity >= 0) {
+        // Check if product with same name already exists for this branch
+        $stmt = $conn->prepare("SELECT id FROM products WHERE name = ? AND branch_id = ?");
+        $stmt->execute([$name, $branch_id]);
 
-    header("Location: products.php");
-    exit;
+        if ($stmt->rowCount() > 0) {
+            $message = "<div class='alert alert-warning'>🚫 Product already exists!</div>";
+        } else {
+            $stmt = $conn->prepare("INSERT INTO products (name, price, quantity, branch_id) VALUES (?, ?, ?, ?)");
+            if ($stmt->execute([$name, $price, $quantity, $branch_id])) {
+                $message = "<div class='alert alert-success'>✅ Product added successfully!</div>";
+            } else {
+                $message = "<div class='alert alert-danger'>❌ Failed to add product. Try again.</div>";
+            }
+        }
+    } else {
+        $message = "<div class='alert alert-warning'>⚠️ Please fill all fields correctly.</div>";
+    }
 }
 ?>
 
@@ -29,29 +43,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <title>Add Product</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
-<body>
+<body class="bg-light">
 <div class="container mt-5">
-  <h4>Add Product</h4>
-  <form method="POST">
+  <h4>➕ Add New Product</h4>
+  <?= $message ?>
+
+  <form method="POST" class="mt-4 p-4 bg-white rounded shadow-sm">
     <div class="mb-3">
-      <label>Name</label>
+      <label>Product Name</label>
       <input type="text" name="name" class="form-control" required>
     </div>
+
     <div class="mb-3">
       <label>Price (RWF)</label>
-      <input type="number" name="price" step="0.01" class="form-control" required>
+      <input type="number" step="0.01" name="price" class="form-control" required>
     </div>
+
     <div class="mb-3">
-      <label>Initial Quantity</label>
+      <label>Quantity</label>
       <input type="number" name="quantity" class="form-control" required>
     </div>
-    <div class="mb-3">
-      <label>Low Stock Alert At</label>
-      <input type="number" name="low_stock_threshold" class="form-control" value="5" required>
-    </div>
-    <button class="btn btn-primary">Save</button>
+
+    <button type="submit" class="btn btn-primary">Save Product</button>
+    <a href="dashboard.php" class="btn btn-secondary">← Back to Dashboard</a>
   </form>
 </div>
 </body>

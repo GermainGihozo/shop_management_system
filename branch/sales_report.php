@@ -1,72 +1,168 @@
 <?php
 session_start();
 require '../includes/db.php';
-require_once 'navbar.php';
+require 'navbar.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'branch') {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'branch') {
     header("Location: ../login.php");
     exit;
 }
 
 $branch_id = $_SESSION['branch_id'];
-$filter = $_GET['filter'] ?? 'daily';
 
-switch ($filter) {
-    case 'weekly':
-        $query = "SELECT * FROM sales WHERE branch_id = ? AND YEARWEEK(sold_at) = YEARWEEK(CURDATE())";
-        break;
-    case 'monthly':
-        $query = "SELECT * FROM sales WHERE branch_id = ? AND MONTH(sold_at) = MONTH(CURDATE()) AND YEAR(sold_at) = YEAR(CURDATE())";
-        break;
-    default: // daily
-        $query = "SELECT * FROM sales WHERE branch_id = ? AND DATE(sold_at) = CURDATE()";
-        break;
+// Build dynamic query based on filters
+$query = "
+    SELECT sales.*, products.name AS product_name
+    FROM sales
+    JOIN products ON sales.product_id = products.id
+    WHERE sales.branch_id = ?
+";
+$params = [$branch_id];
+
+if (!empty($_GET['start_date']) && !empty($_GET['end_date'])) {
+    $query .= " AND DATE(sales.sold_at) BETWEEN ? AND ?";
+    $params[] = $_GET['start_date'];
+    $params[] = $_GET['end_date'];
 }
 
+if (!empty($_GET['product_name'])) {
+    $query .= " AND products.name = ?";
+    $params[] = $_GET['product_name'];
+}
+
+$query .= " ORDER BY sales.sold_at DESC";
 $stmt = $conn->prepare($query);
-$stmt->bind_param("i", $branch_id);
-$stmt->execute();
-$result = $stmt->get_result();
+$stmt->execute($params);
+$sales = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Fetch product list for dropdown
+$product_stmt = $conn->prepare("
+    SELECT DISTINCT products.name AS product_name
+    FROM products
+    JOIN sales ON sales.product_id = products.id
+    WHERE sales.branch_id = ?
+");
+$product_stmt->execute([$branch_id]);
+$products = $product_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Calculate total sales
+$total = 0;
+foreach ($sales as $sale) {
+    $total += $sale['total_price'];
+}
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
   <title>Sales Report</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <div class="container mt-5">
-  <h4>🧾 <?= ucfirst($filter) ?> Sales Report</h4>
-  <div class="mb-3">
-    <a href="?filter=daily" class="btn btn-outline-primary">Today</a>
-    <a href="?filter=weekly" class="btn btn-outline-primary">This Week</a>
-    <a href="?filter=monthly" class="btn btn-outline-primary">This Month</a>
+  <h4>📋 Sales Report</h4>
+
+  <!-- Filter Form -->
+  <form method="GET" class="row g-3 mb-4">
+    <div class="col-md-3">
+      <label>Date From</label>
+      <input type="date" name="start_date" class="form-control" value="<?= $_GET['start_date'] ?? '' ?>">
+    </div>
+    <div class="col-md-3">
+      <label>Date To</label>
+      <input type="date" name="end_date" class="form-control" value="<?= $_GET['end_date'] ?? '' ?>">
+    </div>
+    <div class="col-md-4">
+      <label>Product</label>
+      <select name="product_name" class="form-control">
+        <option value="">All Products</option>
+        <?php foreach ($products as $product): ?>
+          <option value="<?= $product['product_name'] ?>" <?= ($_GET['product_name'] ?? '') == $product['product_name'] ? 'selected' : '' ?>>
+            <?= htmlspecialchars($product['product_name']) ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+      <button class="btn btn-primary w-100">🔍 Filter</button>
+    </div>
+  </form>
+
+  <!-- Export Buttons -->
+  <div class="d-flex justify-content-end mb-3">
+    <a href="export_sales_pdf.php" class="btn btn-danger me-2">📄 Export PDF</a>
+    <a href="export_sales_csv.php" class="btn btn-success">📁 Export CSV</a>
   </div>
 
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>Product ID</th>
-        <th>Qty Sold</th>
-        <th>Price Each (RWF)</th>
-        <th>Total (RWF)</th>
-        <th>Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php while ($sale = $result->fetch_assoc()): ?>
-        <tr>
-          <td><?= $sale['product_id'] ?></td>
-          <td><?= $sale['quantity'] ?></td>
-          <td><?= number_format($sale['price_each'], 2) ?></td>
-          <td><?= number_format($sale['total_price'], 2) ?></td>
-          <td><?= $sale['sold_at'] ?></td>
-        </tr>
-      <?php endwhile; ?>
-    </tbody>
-  </table>
+  <!-- Summary -->
+  <div class="alert alert-info">
+    <strong>Total Sales:</strong> RWF <?= number_format($total, 2) ?> |
+    <strong>Total Transactions:</strong> <?= count($sales) ?>
+  </div>
+
+  <?php if (!$sales): ?>
+    <div class="alert alert-warning">No sales found for selected filters.</div>
+  <?php else: ?>
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Total (RWF)</th>
+            <th>Sale Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($sales as $index => $sale): ?>
+            <tr>
+              <td><?= $index + 1 ?></td>
+              <td><?= htmlspecialchars($sale['product_name']) ?></td>
+              <td><?= $sale['quantity'] ?></td>
+              <td><?= number_format($sale['total_price'], 2) ?></td>
+              <td><?= $sale['sold_at'] ?></td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Chart -->
+    <div class="mt-5">
+      <h5>📈 Sales Trend</h5>
+      <canvas id="salesChart" height="100"></canvas>
+    </div>
+
+    <script>
+      const ctx = document.getElementById('salesChart').getContext('2d');
+      const salesChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: <?= json_encode(array_map(fn($s) => date('Y-m-d', strtotime($s['sold_at'])), $sales)) ?>,
+          datasets: [{
+            label: 'Sales (RWF)',
+            data: <?= json_encode(array_column($sales, 'total_price')) ?>,
+            backgroundColor: '#0d6efd'
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: {
+              title: { display: true, text: 'Date' }
+            },
+            y: {
+              title: { display: true, text: 'RWF' },
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    </script>
+  <?php endif; ?>
 </div>
 </body>
 </html>

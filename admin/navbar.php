@@ -3,7 +3,8 @@
 $username = $_SESSION['username'] ?? 'User';
 $role = ucfirst($_SESSION['role'] ?? 'Role');
 // Adjust the path and extension if needed
-$profile_img = '../includes/images/IMG_20230603_085143_694.jpg'; 
+$profile_img = '../includes/images/IMG_20230603_085143_694
+.jpg'; 
 ?>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-3">
