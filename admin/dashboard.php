@@ -15,7 +15,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
 $stmt = $conn->query("SELECT SUM(total_price) AS total_sales FROM sales");
 $totalSales = $stmt->fetch(PDO::FETCH_ASSOC)['total_sales'] ?? 0;
 
-
 // Get total products
 $stmt = $conn->query("SELECT COUNT(*) AS total_products FROM products");
 $totalProducts = $stmt->fetch(PDO::FETCH_ASSOC)['total_products'] ?? 0;
@@ -36,7 +35,6 @@ $stmt = $conn->query("
     GROUP BY s.branch_id
 ");
 $branchSales = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 ?>
 
 <!DOCTYPE html>
@@ -55,6 +53,7 @@ $branchSales = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
   </style>
 </head>
+<body>
 
 <div class="content">
   <div class="container-fluid">
@@ -99,8 +98,8 @@ $branchSales = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <tbody>
               <?php foreach ($branchSales as $row): ?>
               <tr>
-                <td><?= htmlspecialchars($row['branch']) ?></td>
-                <td>RWF <?= number_format($row['total_sales']) ?></td>
+                <td><?= htmlspecialchars($row['branch_name']) ?></td>
+                <td>RWF <?= number_format($row['branch_sales']) ?></td>
                 <td><?= $row['products_sold'] ?></td>
                 <td><?= $row['last_updated'] ?? 'N/A' ?></td>
               </tr>
@@ -117,8 +116,6 @@ $branchSales = $stmt->fetchAll(PDO::FETCH_ASSOC);
   </div>
 </div>
 
-<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
