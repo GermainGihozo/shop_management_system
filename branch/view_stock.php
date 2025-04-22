@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $stmt = $conn->prepare("INSERT INTO products (name, price, quantity, branch_id) VALUES (?, ?, ?, ?)");
         $stmt->execute([$name, $price, $qty, $branch_id]);
-        header("Location: view_add_products.php"); // refresh to prevent resubmission
+        header("Location: view_stock.php"); // refresh to prevent resubmission
         exit;
     }
 }
