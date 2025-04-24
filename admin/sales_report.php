@@ -1,35 +1,41 @@
 <?php
 session_start();
-require '../includes/db.php'; // Assumes $conn is a valid PDO instance
+require '../includes/db.php';
 require '../includes/auth.php';
 requireRole('admin');
-require'navbar.php';
+require 'navbar.php';
 
-// Use a fixed or session-based branch_id for now
-$branch_id = $_SESSION['branch_id'] ?? 1; // fallback to branch ID 1 if not set
-
-// Date filters (defaults to current month)
 $start_date = $_GET['start_date'] ?? date('Y-m-01');
 $end_date = $_GET['end_date'] ?? date('Y-m-d');
+$selected_branch = $_GET['branch_id'] ?? 'all';
 
-// SQL query with named placeholders and branch join
-$sql = "SELECT s.*, p.name AS product_name, b.name AS branch_name
+// Fetch branches for dropdown
+$branches = $conn->query("SELECT id, name FROM branches")->fetchAll(PDO::FETCH_ASSOC);
+
+$sql = "SELECT b.name AS branch_name, DATE(s.sold_at) AS sale_day,
+               SUM(s.total_price) AS total_sales,
+               SUM(s.quantity) AS total_quantity
         FROM sales s
-        JOIN products p ON s.product_id = p.id
         JOIN branches b ON s.branch_id = b.id
-        WHERE s.branch_id = :branch_id
-        AND DATE(s.sold_at) BETWEEN :start_date AND :end_date
-        ORDER BY s.sold_at DESC";
+        WHERE DATE(s.sold_at) BETWEEN :start_date AND :end_date";
+
+if ($selected_branch !== 'all') {
+    $sql .= " AND s.branch_id = :branch_id";
+}
+
+$sql .= " GROUP BY s.branch_id, DATE(s.sold_at)
+          ORDER BY sale_day DESC";
 
 $stmt = $conn->prepare($sql);
-$stmt->bindParam(':branch_id', $branch_id);
 $stmt->bindParam(':start_date', $start_date);
 $stmt->bindParam(':end_date', $end_date);
+
+if ($selected_branch !== 'all') {
+    $stmt->bindParam(':branch_id', $selected_branch, PDO::PARAM_INT);
+}
+
 $stmt->execute();
 $sales = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-$total_sales = 0;
-$total_items = 0;
 ?>
 
 <!DOCTYPE html>
@@ -37,29 +43,41 @@ $total_items = 0;
 <head>
     <title>Admin Sales Report</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
 <div class="container mt-5">
-    <h2 class="mb-4">All Branches Sales Report</h2>
+    <h2 class="mb-4">Daily Sales Report by Branch</h2>
 
     <form method="GET" class="row g-3 mb-4">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label>Start Date</label>
             <input type="date" name="start_date" class="form-control" value="<?= htmlspecialchars($start_date) ?>">
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label>End Date</label>
             <input type="date" name="end_date" class="form-control" value="<?= htmlspecialchars($end_date) ?>">
         </div>
-        <div class="col-md-4 d-flex align-items-end">
+        <div class="col-md-3">
+            <label>Branch</label>
+            <select name="branch_id" class="form-control">
+                <option value="all" <?= $selected_branch === 'all' ? 'selected' : '' ?>>All Branches</option>
+                <?php foreach ($branches as $branch): ?>
+                    <option value="<?= $branch['id'] ?>" <?= $selected_branch == $branch['id'] ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($branch['name']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
             <button type="submit" class="btn btn-primary w-100">Filter</button>
         </div>
     </form>
 
     <div class="mb-3">
-        <a href="export_sales_csv.php?start_date=<?= $start_date ?>&end_date=<?= $end_date ?>" class="btn btn-success">📥 Download CSV</a>
-        <a href="export_sales_pdf.php?start_date=<?= $start_date ?>&end_date=<?= $end_date ?>" class="btn btn-danger">📄 Download PDF</a>
+        <a href="export_sales_csv.php?start_date=<?= $start_date ?>&end_date=<?= $end_date ?>&branch_id=<?= $selected_branch ?>" class="btn btn-success">📥 Download CSV</a>
+        <a href="export_sales_pdf.php?start_date=<?= $start_date ?>&end_date=<?= $end_date ?>&branch_id=<?= $selected_branch ?>" class="btn btn-danger">📄 Download PDF</a>
     </div>
 
     <table class="table table-bordered table-striped">
@@ -67,38 +85,78 @@ $total_items = 0;
         <tr>
             <th>#</th>
             <th>Branch</th>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Total Amount (RWF)</th>
             <th>Sale Date</th>
+            <th>Total Quantity Sold</th>
+            <th>Total Sales Amount (RWF)</th>
         </tr>
         </thead>
         <tbody>
         <?php if ($sales): ?>
-            <?php $count = 1; foreach ($sales as $row): ?>
+            <?php 
+            $count = 1; 
+            $grand_total = 0;
+            $labels = [];
+            $chartData = [];
+            foreach ($sales as $row): 
+                $grand_total += $row['total_sales'];
+                $labels[] = $row['branch_name'] . ' (' . $row['sale_day'] . ')';
+                $chartData[] = $row['total_sales'];
+            ?>
                 <tr>
                     <td><?= $count++ ?></td>
                     <td><?= htmlspecialchars($row['branch_name']) ?></td>
-                    <td><?= htmlspecialchars($row['product_name']) ?></td>
-                    <td><?= $row['quantity'] ?></td>
-                    <td><?= number_format($row['total_amount'], 2) ?></td>
-                    <td><?= htmlspecialchars($row['sold_at']) ?></td>
+                    <td><?= $row['sale_day'] ?></td>
+                    <td><?= $row['total_quantity'] ?></td>
+                    <td><?= number_format($row['total_sales'], 2) ?></td>
                 </tr>
-                <?php
-                $total_sales += $row['total_amount'];
-                $total_items += $row['quantity'];
-                ?>
             <?php endforeach; ?>
         <?php else: ?>
-            <tr><td colspan="6" class="text-center">No sales found in this period.</td></tr>
+            <tr><td colspan="5" class="text-center">No sales found for this period.</td></tr>
         <?php endif; ?>
         </tbody>
     </table>
 
+    <?php if (!empty($sales)): ?>
     <div class="alert alert-info">
-        <strong>Total Items Sold:</strong> <?= $total_items ?><br>
-        <strong>Total Sales Amount:</strong> RWF <?= number_format($total_sales, 2) ?>
+        <strong>Total Revenue:</strong> RWF <?= number_format($grand_total, 2) ?>
     </div>
+
+    <canvas id="salesChart" height="100"></canvas>
+    <script>
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: <?= json_encode($labels) ?>,
+                datasets: [{
+                    label: 'Total Sales (RWF)',
+                    data: <?= json_encode($chartData) ?>,
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: true },
+                    title: {
+                        display: true,
+                        text: 'Sales Breakdown by Branch and Date'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+    <?php endif; ?>
 </div>
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> -->
+<script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
