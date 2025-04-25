@@ -52,6 +52,17 @@ $branchSales = $stmt->fetchAll(PDO::FETCH_ASSOC);
       .content { margin-left: 0; }
     }
   </style>
+  <style>
+    body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+    footer {
+        margin-top: auto;
+    }
+</style>
+
 </head>
 <body>
 
@@ -118,5 +129,8 @@ $branchSales = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/bootstrap.bundle.min.js"></script>
+<?php
+include '../includes/footer.php';
+?>
 </body>
 </html>

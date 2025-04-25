@@ -44,6 +44,18 @@ $sales = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <title>Admin Sales Report</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+    body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+    footer {
+        margin-top: auto;
+    }
+</style>
+
 </head>
 <body>
 
@@ -158,5 +170,8 @@ $sales = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> -->
 <script src="js/bootstrap.bundle.min.js"></script>
+<?php
+include'../includes/footer.php';
+?>
 </body>
 </html>
