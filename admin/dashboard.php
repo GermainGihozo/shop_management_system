@@ -41,7 +41,7 @@ $branchSales = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <html>
 <head>
   <title>Admin Dashboard</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"> -->
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <style>
     body { overflow-x: hidden; }
