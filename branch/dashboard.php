@@ -30,7 +30,7 @@ $today_sold_qty = $sold_stmt->fetchColumn() ?? 0;
 <html>
 <head>
   <title>Branch Dashboard</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
   <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body class="bg-light">
@@ -74,5 +74,6 @@ $today_sold_qty = $sold_stmt->fetchColumn() ?? 0;
     </div>
   </div>
 </div>
+<script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

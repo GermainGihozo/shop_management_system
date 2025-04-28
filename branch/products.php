@@ -10,16 +10,17 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'branch') {
 
 $branch_id = $_SESSION['branch_id'];
 $products = $conn->prepare("SELECT * FROM products WHERE branch_id = ?");
-$products->bind_param("i", $branch_id);
+$products->bindParam(1, $branch_id, PDO::PARAM_INT);
 $products->execute();
-$result = $products->get_result();
+$result = $products->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
 
 <!DOCTYPE html>
 <html>
 <head>
   <title>My Products</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
   <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body>
@@ -59,5 +60,6 @@ $result = $products->get_result();
     </tbody>
   </table>
 </div>
+<script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

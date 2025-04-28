@@ -70,5 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <a href="dashboard.php" class="btn btn-secondary">← Back to Dashboard</a>
   </form>
 </div>
+<script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
