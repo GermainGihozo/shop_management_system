@@ -23,7 +23,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         // Start transaction
         $conn->beginTransaction();
 
-        // Fetch username before deletion for logging
+        // Fetch username before soft deletion for logging
         $stmtUser = $conn->prepare("SELECT username FROM users WHERE id = :id");
         $stmtUser->execute([':id' => $id]);
         $user = $stmtUser->fetch(PDO::FETCH_ASSOC);
@@ -36,17 +36,13 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 
         $username = $user['username'];
 
-        // Delete logs related to the user
-        $deleteLogs = $conn->prepare("DELETE FROM user_logs WHERE user_id = :id OR target_user_id = :id");
-        $deleteLogs->execute([':id' => $id]);
+        // Soft delete the user (set deleted_at)
+        $softDelete = $conn->prepare("UPDATE users SET deleted_at = NOW() WHERE id = :id");
+        $softDelete->execute([':id' => $id]);
 
-        // Delete the user
-        $deleteUser = $conn->prepare("DELETE FROM users WHERE id = :id");
-        $deleteUser->execute([':id' => $id]);
-
-        // Log this action
+        // Log the soft deletion
         $log = $conn->prepare("INSERT INTO user_logs (user_id, action, target_user_id) VALUES (:admin_id, :action, :target_id)");
-        $action = "Deleted user '$username'";
+        $action = "Soft deleted user '$username'";
         $log->execute([
             ':admin_id' => $admin_id,
             ':action' => $action,
@@ -54,10 +50,10 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         ]);
 
         $conn->commit();
-        $_SESSION['success'] = "User '$username' and related logs deleted successfully.";
+        $_SESSION['success'] = "User '$username' soft deleted successfully.";
     } catch (PDOException $e) {
         $conn->rollBack();
-        $_SESSION['error'] = "Error deleting user: " . $e->getMessage();
+        $_SESSION['error'] = "Error soft deleting user: " . $e->getMessage();
     }
 }
 

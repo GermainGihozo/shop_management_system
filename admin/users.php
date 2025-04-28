@@ -10,12 +10,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
     exit;
 }
 
-$users = $conn->query("
-    SELECT u.*, b.name AS branch_name 
-    FROM users u 
-    LEFT JOIN branches b ON u.branch_id = b.id
-    ORDER BY u.created_at DESC
-");
+$users = $conn->query("SELECT * FROM users WHERE deleted_at IS NULL")->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -45,24 +41,25 @@ $users = $conn->query("
       </tr>
     </thead>
     <tbody>
-      <?php while ($user = $users->fetch(PDO::FETCH_ASSOC)): ?>
-      <tr>
-        <td><?= htmlspecialchars($user['full_name']) ?></td>
-        <td><?= htmlspecialchars($user['username']) ?></td>
-        <td><?= htmlspecialchars($user['role']) ?></td>
-        <td><?= htmlspecialchars($user['branch_name'] ?? '-') ?></td>
-        <td><?= ucfirst(htmlspecialchars($user['status'])) ?></td>
-        <td>
-          <?php if ($user['status'] == 'active'): ?>
-            <a href="deactivate_user.php?id=<?= $user['id'] ?>" class="btn btn-warning btn-sm">Deactivate</a>
-          <?php else: ?>
-            <a href="activate_user.php?id=<?= $user['id'] ?>" class="btn btn-success btn-sm">Activate</a>
-          <?php endif; ?>
-          <a href="delete_user.php?id=<?= $user['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
-        </td>
-      </tr>
-      <?php endwhile; ?>
-    </tbody>
+  <?php foreach ($users as $user): ?>
+  <tr>
+    <td><?= htmlspecialchars($user['full_name']) ?></td>
+    <td><?= htmlspecialchars($user['username']) ?></td>
+    <td><?= htmlspecialchars($user['role']) ?></td>
+    <td><?= htmlspecialchars($user['branch_name'] ?? '-') ?></td>
+    <td><?= ucfirst(htmlspecialchars($user['status'])) ?></td>
+    <td>
+      <?php if ($user['status'] == 'active'): ?>
+        <a href="deactivate_user.php?id=<?= $user['id'] ?>" class="btn btn-warning btn-sm">Deactivate</a>
+      <?php else: ?>
+        <a href="activate_user.php?id=<?= $user['id'] ?>" class="btn btn-success btn-sm">Activate</a>
+      <?php endif; ?>
+      <a href="delete_user.php?id=<?= $user['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
+    </td>
+  </tr>
+  <?php endforeach; ?>
+</tbody>
+
   </table>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
