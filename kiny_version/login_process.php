@@ -23,7 +23,7 @@ if ($user && password_verify($password, $user['password'])) {
     }
     exit;
 } else {
-    $_SESSION['login_error'] = "Invalid username or password.";
+    $_SESSION['login_error'] = "Password mwakoresheje siyo.";
     header("Location: login.php");
     exit;
 }
