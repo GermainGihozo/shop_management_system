@@ -40,7 +40,7 @@ $today_sold_qty = $sold_stmt->fetchColumn() ?? 0;
     <div class="col-md-4">
       <div class="card shadow-sm border-start border-success border-4">
         <div class="card-body">
-          <h5 class="card-title">📦 Total Stock</h5>
+          <h5 class="card-title">📦ibicuruzwa</h5>
           <p class="card-text fs-4"><?= $total_stock ?> items</p>
         </div>
       </div>
