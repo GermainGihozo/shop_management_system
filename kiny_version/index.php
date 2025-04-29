@@ -5,7 +5,7 @@ session_start();
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Welcome - Shop Management System</title>
+    <title>Murakaza neza - Shop Management System</title>
     <link rel="stylesheet" href="branch/css/bootstrap.min.css">
     <style>
         body {
@@ -31,12 +31,12 @@ session_start();
 
 <div class="main-content">
     <div class="card shadow p-4 text-center">
-        <h1 class="mb-3">Welcome to Shop Management System</h1>
-        <p class="lead mb-4">Manage sales, branches, stock, and reports efficiently.</p>
+        <h1 class="mb-3">Murakaza neza kuri Shop Management System</h1>
+        <p class="lead mb-4">Genzura ibyacurujwe,ibicuruzwa,raporo.</p>
         <div class="d-flex justify-content-center gap-3">
-            <a href="login.php" class="btn btn-primary">Login as Admin</a>
-            <a href="login.php" class="btn btn-success">Login as Branch User</a>
-           <a href="kiny_version" class="btn btn-primary">Change language</a>
+            <!-- <a href="login.php" class="btn btn-primary">Login as Admin</a> -->
+            <a href="login.php" class="btn btn-success">Injira nk'umukozi</a>
+            <a href="../index.php" class="btn btn-primary">Hindura ururimi</a>
         </div>
     </div>
 </div>

@@ -5,7 +5,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Shop Management Login</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <style>
     body {
@@ -29,14 +28,14 @@
     <?php endif; ?>
     <form action="login_process.php" method="POST">
       <div class="mb-3">
-        <label>Username</label>
+        <label>izina</label>
         <input type="text" name="username" class="form-control" required>
       </div>
       <div class="mb-3">
-        <label>Password</label>
+        <label>Ijambobanga</label>
         <input type="password" name="password" class="form-control" required>
       </div>
-      <button class="btn btn-primary w-100">Login</button>
+      <button class="btn btn-primary w-100">injira</button>
     </form>
   </div>
 </body>

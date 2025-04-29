@@ -56,7 +56,6 @@ foreach ($sales as $sale) {
 <html>
 <head>
   <title>Sales Report</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -165,5 +164,6 @@ foreach ($sales as $sale) {
     </script>
   <?php endif; ?>
 </div>
+<script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
