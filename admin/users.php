@@ -65,6 +65,6 @@ $users = $conn->query("SELECT * FROM users WHERE deleted_at IS NULL")->fetchAll(
 <script src="js/bootstrap.bundle.min.js"></script>
 <?php
 include'../includes/footer.php';
-?>s
+?>
 </body>
 </html>
