@@ -28,8 +28,6 @@ function active($page) {
         <li class="nav-item">
           <a class="nav-link <?= active('profile.php') ?>" href="profile.php">Profile</a>
         </li>
-        <li><a class="nav-item" href="branch_profile.php">👤 My Profile</a></li>
-
         <li class="nav-item">
           <a class="nav-link text-danger <?= active('../logout.php') ?>" href="../logout.php">Logout</a>
         </li>
