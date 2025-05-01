@@ -9,6 +9,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'branch') {
 }
 
 $branch_id = $_SESSION['branch_id'] ?? 0;
+$username = $_SESSION['username'] ?? 'Branch User';
 
 // Total products in stock
 $product_stmt = $conn->prepare("SELECT SUM(quantity) as total_stock FROM products WHERE branch_id = ?");
@@ -30,12 +31,11 @@ $today_sold_qty = $sold_stmt->fetchColumn() ?? 0;
 <html>
 <head>
   <title>Branch Dashboard</title>
-  
   <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body class="bg-light">
 <div class="container mt-5">
-  <h3 class="mb-4">Hello, <?= htmlspecialchars($_SESSION['name'] ?? $_SESSION['username'] ?? 'Branch User') ?>👋</h4>
+  <h3 class="mb-4">Hello, <?= htmlspecialchars($username) ?> 👋</h3>
 
   <div class="row g-4">
     <div class="col-md-4">
@@ -67,7 +67,7 @@ $today_sold_qty = $sold_stmt->fetchColumn() ?? 0;
   <div class="mt-5">
     <h5>Quick Links</h5>
     <div class="d-flex flex-wrap gap-3">
-      <a href="add_product.php" class="btn btn-success"><i class="bi bi-plus-circle"></i> ➕ Add Product</a>
+      <a href="add_product.php" class="btn btn-success">➕ Add Product</a>
       <a href="record_sale.php" class="btn btn-primary">💸 Record Sale</a>
       <a href="view_products.php" class="btn btn-info">👀 View Products</a>
       <a href="sales_report.php" class="btn btn-secondary">📋 Sales Report</a>

@@ -13,7 +13,7 @@ if ($user && password_verify($password, $user['password'])) {
     // Set session variables
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['role'] = $user['role'];
-    $_SESSION['name'] = $user['name'];
+    $_SESSION['username'] = $user['username'];
     $_SESSION['branch_id'] = $user['branch_id'];
 
     // Redirect based on role
