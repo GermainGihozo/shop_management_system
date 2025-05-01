@@ -8,6 +8,10 @@ requireRole('branch');
 $branch_id = $_SESSION['branch_id'];
 $error = "";
 
+// Check for success message from redirect
+$success = $_SESSION['success'] ?? '';
+unset($_SESSION['success']);
+
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name']);
@@ -23,7 +27,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $stmt = $conn->prepare("INSERT INTO products (name, price, quantity, branch_id) VALUES (?, ?, ?, ?)");
         $stmt->execute([$name, $price, $qty, $branch_id]);
-        header("Location: view_stock.php"); // refresh to prevent resubmission
+
+        $_SESSION['success'] = "✅ Product '$name' added successfully.";
+        header("Location: view_stock.php"); // reload to show message
         exit;
     }
 }
@@ -37,7 +43,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <html>
 <head>
   <title>Branch Products</title>
-<link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body>
 <div class="container mt-5">
@@ -45,6 +51,10 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   <?php if ($error): ?>
     <div class="alert alert-danger"><?= $error ?></div>
+  <?php endif; ?>
+
+  <?php if ($success): ?>
+    <div class="alert alert-success"><?= $success ?></div>
   <?php endif; ?>
 
   <form method="POST" class="row g-3 mb-5">
