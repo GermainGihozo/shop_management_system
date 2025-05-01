@@ -12,14 +12,13 @@ $branches = $conn->query("SELECT * FROM branches")->fetchAll(PDO::FETCH_ASSOC);
 <html>
 <head>
   <title>Manage Products</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body>
 <?php
 $low_stock = $conn->query("SELECT COUNT(*) as count FROM products WHERE quantity < 5")->fetch(PDO::FETCH_ASSOC)['count'];
 if ($low_stock > 0): ?>
-  <div class="alert alert-warning">
+  <div class="alert alert-warning text-center">
     ⚠️ <?= $low_stock ?> product(s) are low in stock!
   </div>
 <?php endif; ?>
@@ -27,7 +26,9 @@ if ($low_stock > 0): ?>
 <div class="container mt-4">
   <h4 class="mb-4">📦 All Products by Branch</h4>
 
-  <?php foreach ($branches as $branch): ?>
+  <?php
+  $grand_total_cost = 0; // For all branches
+  foreach ($branches as $branch): ?>
     <div class="card mb-4">
       <div class="card-header bg-dark text-white">
         Branch: <?= htmlspecialchars($branch['name']) ?>
@@ -48,7 +49,11 @@ if ($low_stock > 0): ?>
               $stmt->execute([$branch['id']]);
               $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+              $total_cost = 0;
+
               foreach ($products as $product):
+                $product_cost = $product['price'] * $product['quantity'];
+                $total_cost += $product_cost;
             ?>
               <tr class="<?= ($product['quantity'] < 5) ? 'table-warning' : '' ?>">
                 <td><?= htmlspecialchars($product['name']) ?></td>
@@ -64,15 +69,31 @@ if ($low_stock > 0): ?>
 
         <?php if (empty($products)): ?>
           <p class="text-muted">No products in this branch.</p>
-        <?php endif; ?>
+        <?php else: ?>
+          <div class="text-end fw-bold">
+            Total Stock Cost for <?= htmlspecialchars($branch['name']) ?>:
+            <span class="text-success"><?= number_format($total_cost, 0) ?> RWF</span>
+          </div>
+        <?php endif;
+
+        $grand_total_cost += $total_cost;
+        ?>
       </div>
     </div>
   <?php endforeach; ?>
+
+  <!-- Grand Total -->
+  <div class="card text-end mb-5">
+    <div class="card-body bg-light">
+      <h5 class="fw-bold">💰 Grand Total Stock Cost (All Branches): 
+        <span class="text-primary"><?= number_format($grand_total_cost, 0) ?> RWF</span>
+      </h5>
+    </div>
+  </div>
+
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script src="js/bootstrap.bundle.min.js"></script>
-<?php
-include'../includes/footer.php';
-?>
+<?php include '../includes/footer.php'; ?>
 </body>
 </html>
