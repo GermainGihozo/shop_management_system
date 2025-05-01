@@ -35,7 +35,7 @@ $today_sold_qty = $sold_stmt->fetchColumn() ?? 0;
 </head>
 <body class="bg-light">
 <div class="container mt-5">
-  <h3 class="mb-4">Hello <?= htmlspecialchars($_SESSION['username']) ?> 👋</h3>
+  <h3 class="mb-4">Hello, <?= htmlspecialchars($_SESSION['name'] ?? $_SESSION['username'] ?? 'Branch User') ?>👋</h4>
 
   <div class="row g-4">
     <div class="col-md-4">
