@@ -53,16 +53,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
   <title>Record Sale</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/bootstrap.min.css">
+  <style>
+    @media (max-width: 576px) {
+      h4 {
+        font-size: 1.2rem;
+      }
+      .btn {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+    }
+  </style>
 </head>
 <body class="bg-light">
-<div class="container mt-5">
-  <h4>🧾 Record Product Sale</h4>
+<div class="container py-4">
+  <h4 class="mb-3">🧾 Record Product Sale</h4>
   <?= $message ?>
 
-  <form method="POST" class="p-4 bg-white rounded shadow-sm mt-4">
+  <form method="POST" class="p-4 bg-white rounded shadow-sm">
     <div class="mb-3">
-      <label>Select Product</label>
+      <label class="form-label">Select Product</label>
       <select name="product_id" class="form-select" required>
         <option value="">-- Choose Product --</option>
         <?php foreach ($products as $product): ?>
@@ -74,19 +86,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <div class="mb-3">
-      <label>Quantity Sold</label>
+      <label class="form-label">Quantity Sold</label>
       <input type="number" name="quantity" class="form-control" min="1" required>
     </div>
 
     <div class="mb-3">
-      <label>Date of Sale</label>
+      <label class="form-label">Date of Sale</label>
       <input type="text" class="form-control" value="<?= date('Y-m-d H:i:s') ?>" readonly>
     </div>
 
-    <button type="submit" class="btn btn-success">💾 Record Sale</button>
-    <a href="dashboard.php" class="btn btn-secondary">← Back to Dashboard</a>
+    <div class="d-flex flex-column flex-md-row gap-2">
+      <button type="submit" class="btn btn-success">💾 Record Sale</button>
+      <a href="dashboard.php" class="btn btn-secondary">← Back to Dashboard</a>
+    </div>
   </form>
 </div>
+<?php
+include'../includes/footer.php';
+?>
 <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

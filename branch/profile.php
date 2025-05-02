@@ -21,6 +21,7 @@ unset($_SESSION['success']);
 <html>
 <head>
   <title>My Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body>
@@ -40,7 +41,6 @@ unset($_SESSION['success']);
       <th>Username</th>
       <td><?= htmlspecialchars($user['username']) ?></td>
     </tr>
-    <!--  -->
     <tr>
       <th>Role</th>
       <td><?= htmlspecialchars($user['role']) ?></td>
@@ -49,7 +49,9 @@ unset($_SESSION['success']);
 
   <a href="change_password.php" class="btn btn-warning mt-2">🔐 Change Password</a>
 </div>
-
+<?php
+include'../includes/footer.php';
+?>
 <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

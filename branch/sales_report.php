@@ -56,6 +56,7 @@ foreach ($sales as $sale) {
 <html>
 <head>
   <title>Sales Report</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -65,15 +66,15 @@ foreach ($sales as $sale) {
 
   <!-- Filter Form -->
   <form method="GET" class="row g-3 mb-4">
-    <div class="col-md-3">
+    <div class="col-sm-6 col-md-3">
       <label>Date From</label>
       <input type="date" name="start_date" class="form-control" value="<?= $_GET['start_date'] ?? '' ?>">
     </div>
-    <div class="col-md-3">
+    <div class="col-sm-6 col-md-3">
       <label>Date To</label>
       <input type="date" name="end_date" class="form-control" value="<?= $_GET['end_date'] ?? '' ?>">
     </div>
-    <div class="col-md-4">
+    <div class="col-sm-8 col-md-4">
       <label>Product</label>
       <select name="product_name" class="form-control">
         <option value="">All Products</option>
@@ -84,14 +85,14 @@ foreach ($sales as $sale) {
         <?php endforeach; ?>
       </select>
     </div>
-    <div class="col-md-2 d-flex align-items-end">
-      <button class="btn btn-primary w-100">🔍 Filter</button>
+    <div class="col-sm-4 col-md-2 d-grid align-items-end">
+      <button class="btn btn-primary">🔍 Filter</button>
     </div>
   </form>
 
   <!-- Export Buttons -->
-  <div class="d-flex justify-content-end mb-3">
-    <a href="export_sales_pdf.php" class="btn btn-danger me-2">📄 Export PDF</a>
+  <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mb-3">
+    <a href="export_sales_pdf.php" class="btn btn-danger">📄 Export PDF</a>
     <a href="export_sales_csv.php" class="btn btn-success">📁 Export CSV</a>
   </div>
 

@@ -31,14 +31,28 @@ $today_sold_qty = $sold_stmt->fetchColumn() ?? 0;
 <html>
 <head>
   <title>Branch Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/bootstrap.min.css">
+  <style>
+    @media (max-width: 576px) {
+      h3, .card-title {
+        font-size: 1.2rem;
+      }
+      .card-text.fs-4 {
+        font-size: 1.1rem;
+      }
+      .btn {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
 </head>
 <body class="bg-light">
-<div class="container mt-5">
-  <h3 class="mb-4">Hello, <?= htmlspecialchars($username) ?> 👋</h3>
+<div class="container py-4">
+  <h3 class="mb-4 text-center text-md-start">Hello, <?= htmlspecialchars($username) ?> 👋</h3>
 
   <div class="row g-4">
-    <div class="col-md-4">
+    <div class="col-md-4 col-12">
       <div class="card shadow-sm border-start border-success border-4">
         <div class="card-body">
           <h5 class="card-title">📦 Total Stock</h5>
@@ -46,7 +60,7 @@ $today_sold_qty = $sold_stmt->fetchColumn() ?? 0;
         </div>
       </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4 col-12">
       <div class="card shadow-sm border-start border-primary border-4">
         <div class="card-body">
           <h5 class="card-title">💰 Today’s Sales</h5>
@@ -54,7 +68,7 @@ $today_sold_qty = $sold_stmt->fetchColumn() ?? 0;
         </div>
       </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4 col-12">
       <div class="card shadow-sm border-start border-warning border-4">
         <div class="card-body">
           <h5 class="card-title">🛒 Products Sold Today</h5>
@@ -65,8 +79,8 @@ $today_sold_qty = $sold_stmt->fetchColumn() ?? 0;
   </div>
 
   <div class="mt-5">
-    <h5>Quick Links</h5>
-    <div class="d-flex flex-wrap gap-3">
+    <h5 class="text-center text-md-start">Quick Links</h5>
+    <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-md-start">
       <a href="add_product.php" class="btn btn-success">➕ Add Product</a>
       <a href="record_sale.php" class="btn btn-primary">💸 Record Sale</a>
       <a href="view_products.php" class="btn btn-info">👀 View Products</a>
@@ -74,6 +88,9 @@ $today_sold_qty = $sold_stmt->fetchColumn() ?? 0;
     </div>
   </div>
 </div>
+<?php
+include'../includes/footer.php';
+?>
 <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
