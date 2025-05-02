@@ -55,20 +55,88 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <form method="POST" class="mt-3">
     <div class="mb-3">
       <label>Current Password</label>
-      <input type="password" name="current_password" class="form-control" required>
+      <div class="input-group">
+        <input type="password" name="current_password" class="form-control" id="currentPassword" required>
+        <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('currentPassword')">👁️</button>
+      </div>
     </div>
+
     <div class="mb-3">
       <label>New Password</label>
-      <input type="password" name="new_password" class="form-control" required>
+      <div class="input-group">
+        <input type="password" name="new_password" class="form-control" id="newPassword" oninput="checkStrength()" required>
+        <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('newPassword')">👁️</button>
+      </div>
+      <small id="strengthText" class="text-muted"></small>
+      <div class="progress mt-1">
+        <div id="strengthBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+      </div>
     </div>
+
     <div class="mb-3">
       <label>Confirm New Password</label>
-      <input type="password" name="confirm_password" class="form-control" required>
+      <div class="input-group">
+        <input type="password" name="confirm_password" class="form-control" id="confirmPassword" required>
+        <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('confirmPassword')">👁️</button>
+      </div>
     </div>
+
     <button class="btn btn-primary">Change Password</button>
     <a href="profile.php" class="btn btn-secondary">Cancel</a>
   </form>
 </div>
+
 <script src="js/bootstrap.bundle.min.js"></script>
+<script>
+function togglePassword(id) {
+  const input = document.getElementById(id);
+  input.type = input.type === "password" ? "text" : "password";
+}
+
+function checkStrength() {
+  const password = document.getElementById('newPassword').value;
+  const strengthBar = document.getElementById('strengthBar');
+  const strengthText = document.getElementById('strengthText');
+  let strength = 0;
+
+  if (password.length >= 6) strength += 1;
+  if (/[A-Z]/.test(password)) strength += 1;
+  if (/[a-z]/.test(password)) strength += 1;
+  if (/\d/.test(password)) strength += 1;
+  if (/[@$!%*?&#]/.test(password)) strength += 1;
+
+  let strengthColor, strengthLabel;
+  switch (strength) {
+    case 0:
+    case 1:
+      strengthColor = "bg-danger";
+      strengthLabel = "Very Weak";
+      break;
+    case 2:
+      strengthColor = "bg-warning";
+      strengthLabel = "Weak";
+      break;
+    case 3:
+      strengthColor = "bg-info";
+      strengthLabel = "Moderate";
+      break;
+    case 4:
+      strengthColor = "bg-primary";
+      strengthLabel = "Strong";
+      break;
+    case 5:
+      strengthColor = "bg-success";
+      strengthLabel = "Very Strong";
+      break;
+  }
+
+  strengthBar.style.width = (strength * 20) + "%";
+  strengthBar.className = "progress-bar " + strengthColor;
+  strengthText.textContent = strengthLabel;
+}
+</script>
+<?php
+include'../includes/footer.php';
+?>
 </body>
 </html>
