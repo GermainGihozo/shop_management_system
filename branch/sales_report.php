@@ -165,6 +165,9 @@ foreach ($sales as $sale) {
     </script>
   <?php endif; ?>
 </div>
+<?php
+include'../includes/footer.php';
+?>
 <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
