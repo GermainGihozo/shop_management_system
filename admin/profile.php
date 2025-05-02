@@ -17,36 +17,51 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 <head>
   <title>My Profile</title>
   <link rel="stylesheet" href="css/bootstrap.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    @media (max-width: 768px) {
+      .table th, .table td {
+        font-size: 14px;
+      }
+      h4 {
+        font-size: 18px;
+      }
+      .btn {
+        font-size: 14px;
+        padding: 0.4rem 0.8rem;
+      }
+    }
+  </style>
 </head>
 <body>
 <div class="container mt-5">
   <h4>👤 My Profile</h4>
-  <table class="table table-bordered">
-    <tr>
-      <th>Full Name</th>
-      <td><?= htmlspecialchars($user['full_name']) ?></td>
-    </tr>
-    <tr>
-      <th>Username</th>
-      <td><?= htmlspecialchars($user['username']) ?></td>
-    </tr>
-    <tr>
-      <th>Role</th>
-      <td><?= htmlspecialchars($user['role']) ?></td>
-    </tr>
-    <?php if ($user['role'] === 'branch'): ?>
-    <tr>
-      <th>Branch</th>
-      <td><?= htmlspecialchars($user['branch_name']) ?></td>
-    </tr>
-    <?php endif; ?>
-  </table>
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <tr>
+        <th>Full Name</th>
+        <td><?= htmlspecialchars($user['full_name']) ?></td>
+      </tr>
+      <tr>
+        <th>Username</th>
+        <td><?= htmlspecialchars($user['username']) ?></td>
+      </tr>
+      <tr>
+        <th>Role</th>
+        <td><?= htmlspecialchars($user['role']) ?></td>
+      </tr>
+      <?php if ($user['role'] === 'branch'): ?>
+      <tr>
+        <th>Branch</th>
+        <td><?= htmlspecialchars($user['branch_name']) ?></td>
+      </tr>
+      <?php endif; ?>
+    </table>
+  </div>
 
   <a href="edit_profile.php" class="btn btn-warning">✏️ Edit Profile</a>
 </div>
 <script src="js/bootstrap.bundle.min.js"></script>
-<?php
-include'../includes/footer.php';
-?>
+<?php include '../includes/footer.php'; ?>
 </body>
 </html>

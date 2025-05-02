@@ -32,48 +32,50 @@ if (!$product) {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Edit Product</title>
-  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-  html, body {
-    height: 100%;
-  }
-  body {
-    display: flex;
-    flex-direction: column;
-  }
-  .container {
-    flex: 1;
-  }
-</style>
-
+    html, body {
+      height: 100%;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .container {
+      flex: 1;
+    }
+    footer {
+      margin-top: auto;
+    }
+  </style>
 </head>
 <body>
-  <?php
-  include'navbar.php';
-  ?>
-<div class="container mt-5">
-  <h4>Edit Product</h4>
-  <form method="POST">
-    <div class="mb-3">
-      <label>Product Name</label>
-      <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($product['name']) ?>" required>
-    </div>
-    <div class="mb-3">
-      <label>Price (RWF)</label>
-      <input type="number" name="price" class="form-control" value="<?= $product['price'] ?>" required>
-    </div>
-    <div class="mb-3">
-      <label>Quantity</label>
-      <input type="number" name="quantity" class="form-control" value="<?= $product['quantity'] ?>" required>
-    </div>
-    <button type="submit" class="btn btn-success">Save Changes</button>
-    <a href="products.php" class="btn btn-secondary">Cancel</a>
-  </form>
-</div>
-<script src="js/bootstrap.bundle.min.js"></script>
-<?php include '../includes/footer.php'; ?>
+  <?php include 'navbar.php'; ?>
+
+  <div class="container mt-5">
+    <h4 class="mb-4">Edit Product</h4>
+    <form method="POST" class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">Product Name</label>
+        <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($product['name']) ?>" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Price (RWF)</label>
+        <input type="number" name="price" class="form-control" value="<?= $product['price'] ?>" required>
+      <div class="col-12 d-flex gap-2">
+        <button type="submit" class="btn btn-success">Save Changes</button>
+        <a href="products.php" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <?php include '../includes/footer.php'; ?>
 </body>
 </html>

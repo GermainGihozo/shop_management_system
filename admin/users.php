@@ -10,7 +10,11 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
     exit;
 }
 
-$users = $conn->query("SELECT * FROM users WHERE deleted_at IS NULL")->fetchAll(PDO::FETCH_ASSOC);
+try {
+    $users = $conn->query("SELECT * FROM users WHERE deleted_at IS NULL")->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $error = "Error fetching users: " . $e->getMessage();
+}
 
 ?>
 
@@ -21,8 +25,13 @@ $users = $conn->query("SELECT * FROM users WHERE deleted_at IS NULL")->fetchAll(
   <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body>
+
 <?php if (isset($_GET['msg'])): ?>
   <div class="alert alert-success"><?= htmlspecialchars($_GET['msg']) ?></div>
+<?php endif; ?>
+
+<?php if (isset($error)): ?>
+  <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
 <?php endif; ?>
 
 <div class="container mt-5">
@@ -40,30 +49,33 @@ $users = $conn->query("SELECT * FROM users WHERE deleted_at IS NULL")->fetchAll(
       </tr>
     </thead>
     <tbody>
-  <?php foreach ($users as $user): ?>
-  <tr>
-    <td><?= htmlspecialchars($user['full_name']) ?></td>
-    <td><?= htmlspecialchars($user['username']) ?></td>
-    <td><?= htmlspecialchars($user['role']) ?></td>
-    <td><?= htmlspecialchars($user['branch_name'] ?? '-') ?></td>
-    <td><?= ucfirst(htmlspecialchars($user['status'])) ?></td>
-    <td>
-      <?php if ($user['status'] == 'active'): ?>
-        <a href="deactivate_user.php?id=<?= $user['id'] ?>" class="btn btn-warning btn-sm">Deactivate</a>
-      <?php else: ?>
-        <a href="activate_user.php?id=<?= $user['id'] ?>" class="btn btn-success btn-sm">Activate</a>
-      <?php endif; ?>
-      <a href="delete_user.php?id=<?= $user['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
-    </td>
-  </tr>
-  <?php endforeach; ?>
-</tbody>
-
+  <?php if (empty($users)): ?>
+    <tr><td colspan="6">No users found.</td></tr>
+  <?php else: ?>
+    <?php foreach ($users as $user): ?>
+    <tr>
+      <td><?= htmlspecialchars($user['full_name']) ?></td>
+      <td><?= htmlspecialchars($user['username']) ?></td>
+      <td><?= htmlspecialchars($user['role']) ?></td>
+      <td><?= htmlspecialchars($user['branch_name'] ?? '-') ?></td>
+      <td><?= ucfirst(htmlspecialchars($user['status'])) ?></td>
+      <td>
+        <?php if ($user['status'] == 'active'): ?>
+          <a href="deactivate_user.php?id=<?= $user['id'] ?>" class="btn btn-warning btn-sm">Deactivate</a>
+        <?php else: ?>
+          <a href="activate_user.php?id=<?= $user['id'] ?>" class="btn btn-success btn-sm">Activate</a>
+        <?php endif; ?>
+        <a href="delete_user.php?id=<?= $user['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
+      </td>
+    </tr>
+    <?php endforeach; ?>
+  <?php endif; ?>
+  </tbody>
   </table>
 </div>
+
 <script src="js/bootstrap.bundle.min.js"></script>
-<?php
-include'../includes/footer.php';
-?>
+<?php include '../includes/footer.php'; ?>
+
 </body>
 </html>
