@@ -7,7 +7,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome - Shop Management System</title>
+    <title>Murakaza neza! - Shop Management System</title>
     <link rel="stylesheet" href="branch/css/bootstrap.min.css">
     <style>
         body {
@@ -36,12 +36,12 @@ session_start();
 
 <div class="main-content">
     <div class="card shadow p-4 text-center">
-        <h1 class="mb-3 fs-3">Welcome to Shop Management System</h1>
-        <p class="lead mb-4">Manage sales, branches, stock, and reports efficiently.</p>
+        <h1 class="mb-3 fs-3">Murakaza neza muri sisitemu ya Shop Management</h1>
+        <p class="lead mb-4">Genzura ibicuruzwa,ibyacurujwe, stock.</p>
         <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
-            <a href="login.php" class="btn btn-primary w-100">Login as Admin</a>
-            <a href="login.php" class="btn btn-success w-100">Login as Branch User</a>
-            <a href="kiny_version" class="btn btn-primary w-100">Change language</a>
+            <a href="login.php" class="btn btn-primary w-100">Injira nka admin</a>
+            <a href="login.php" class="btn btn-success w-100">Injira nkumukozi</a>
+            <a href="../index.php" class="btn btn-primary w-100">Hindura Ururimi</a>
         </div>
     </div>
 </div>

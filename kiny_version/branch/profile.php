@@ -34,7 +34,7 @@ unset($_SESSION['success']);
 
   <table class="table table-bordered mt-4">
     <tr>
-      <th>Name</th>
+      <th>Izina</th>
       <td><?= htmlspecialchars($user['full_name']) ?></td>
     </tr>
     <tr>
@@ -47,7 +47,7 @@ unset($_SESSION['success']);
     </tr>
   </table>
 
-  <a href="change_password.php" class="btn btn-warning mt-2">🔐 Change Password</a>
+  <a href="change_password.php" class="btn btn-warning mt-2">🔐 Hindura Password</a>
 </div>
 <?php
 include'../includes/footer.php';

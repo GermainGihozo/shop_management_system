@@ -23,11 +23,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $check->execute([$name, $branch_id]);
 
     if ($check->fetch()) {
-        $error = "⚠️ Product '$name' already exists in your branch.";
+        $error = "⚠️ igicuruzwa '$name' Gisanzwe kirimo.";
     } else {
         $stmt = $conn->prepare("INSERT INTO products (name, price, quantity, branch_id) VALUES (?, ?, ?, ?)");
         $stmt->execute([$name, $price, $qty, $branch_id]);
-
         $_SESSION['success'] = "✅ Product '$name' added successfully.";
         header("Location: view_stock.php"); // reload to show message
         exit;
@@ -48,7 +47,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
 <div class="container mt-5">
-  <h4>🛒 Add New Product</h4>
+  <h4>🛒 Injiza igicuruzwa gishya</h4>
 
   <?php if ($error): ?>
     <div class="alert alert-danger"><?= $error ?></div>
@@ -69,17 +68,17 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <input type="number" name="quantity" class="form-control" placeholder="Quantity" required>
     </div>
     <div class="col-sm-6 col-md-2 d-grid">
-      <button class="btn btn-primary">Add Product</button>
+      <button class="btn btn-primary">Injiza igicuruzwa</button>
     </div>
   </form>
 
-  <h4>📦 Current Products</h4>
+  <h4>📦 Ibicuruzwa bisanzwe</h4>
   <div class="table-responsive">
     <table class="table table-bordered table-striped">
       <thead class="table-dark">
         <tr>
-          <th>Name</th>
-          <th>Price (RWF)</th>
+          <th>Izina</th>
+          <th>Igiciro (RWF)</th>
           <th>Stock</th>
         </tr>
       </thead>

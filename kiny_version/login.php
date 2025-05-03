@@ -33,14 +33,14 @@
     <?php endif; ?>
     <form action="login_process.php" method="POST">
       <div class="mb-3">
-        <label>Username</label>
+        <label>Izina</label>
         <input type="text" name="username" class="form-control" required>
       </div>
       <div class="mb-3">
-        <label>Password</label>
+        <label>Ijambobanga</label>
         <input type="password" name="password" class="form-control" required>
       </div>
-      <button class="btn btn-primary w-100">Login</button>
+      <button class="btn btn-primary w-100">Injira</button>
     </form>
   </div>
 </body>

@@ -63,7 +63,7 @@ $today_sold_qty = $sold_stmt->fetchColumn() ?? 0;
     <div class="col-md-4 col-12">
       <div class="card shadow-sm border-start border-primary border-4">
         <div class="card-body">
-          <h5 class="card-title">💰 Today’s Sales</h5>
+          <h5 class="card-title">💰 Ibyacurujwe uyumunsi</h5>
           <p class="card-text fs-4"><?= number_format($today_sales, 2) ?> RWF</p>
         </div>
       </div>
@@ -71,7 +71,7 @@ $today_sold_qty = $sold_stmt->fetchColumn() ?? 0;
     <div class="col-md-4 col-12">
       <div class="card shadow-sm border-start border-warning border-4">
         <div class="card-body">
-          <h5 class="card-title">🛒 Products Sold Today</h5>
+          <h5 class="card-title">🛒 Ibicuruzwa byacurujwe uyumunsi</h5>
           <p class="card-text fs-4"><?= $today_sold_qty ?> items</p>
         </div>
       </div>
@@ -81,10 +81,10 @@ $today_sold_qty = $sold_stmt->fetchColumn() ?? 0;
   <div class="mt-5">
     <h5 class="text-center text-md-start">Quick Links</h5>
     <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-md-start">
-      <a href="add_product.php" class="btn btn-success">➕ Add Product</a>
-      <a href="record_sale.php" class="btn btn-primary">💸 Record Sale</a>
-      <a href="view_products.php" class="btn btn-info">👀 View Products</a>
-      <a href="sales_report.php" class="btn btn-secondary">📋 Sales Report</a>
+      <a href="add_product.php" class="btn btn-success">➕ Injiza igicuruzwa</a>
+      <a href="record_sale.php" class="btn btn-primary">💸 Curuza</a>
+      <a href="view_products.php" class="btn btn-info">👀 Reba Ibicuruzwa</a>
+      <a href="sales_report.php" class="btn btn-secondary">📋 Raporo y'ibyacurujwe</a>
     </div>
   </div>
 </div>

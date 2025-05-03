@@ -39,12 +39,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $insert = $conn->prepare("INSERT INTO sales (product_id, branch_id, quantity, price_each, total_price, sold_at) VALUES (?, ?, ?, ?, ?, NOW())");
             $insert->execute([$product_id, $branch_id, $quantity_sold, $price_each, $total_price]);
 
-            $message = "<div class='alert alert-success'>✅ Sale recorded successfully!</div>";
+            $message = "<div class='alert alert-success'>✅ Igicuruzwa cyinjijwemo!</div>";
         } else {
-            $message = "<div class='alert alert-danger'>❌ Not enough stock or invalid quantity.</div>";
+            $message = "<div class='alert alert-danger'>❌ Stock ntihagije cg Igicuruzwa sicyo.</div>";
         }
     } else {
-        $message = "<div class='alert alert-danger'>⚠️ Product not found!</div>";
+        $message = "<div class='alert alert-danger'>⚠️ Igicuruzwa ntikibonetse</div>";
     }
 }
 ?>
@@ -69,14 +69,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body class="bg-light">
 <div class="container py-4">
-  <h4 class="mb-3">🧾 Record Product Sale</h4>
+  <h4 class="mb-3">🧾 Injiza icyo ucuruje</h4>
   <?= $message ?>
 
   <form method="POST" class="p-4 bg-white rounded shadow-sm">
     <div class="mb-3">
-      <label class="form-label">Select Product</label>
+      <label class="form-label">Hitamo Igicuruzwa</label>
       <select name="product_id" class="form-select" required>
-        <option value="">-- Choose Product --</option>
+        <option value="">-- Hitamo Igicuruzwa --</option>
         <?php foreach ($products as $product): ?>
           <option value="<?= $product['id'] ?>">
             <?= htmlspecialchars($product['name']) ?> (Stock: <?= $product['quantity'] ?> | RWF <?= number_format($product['price'], 2) ?>)
@@ -86,18 +86,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Quantity Sold</label>
+      <label class="form-label">Ingano yacurujwe</label>
       <input type="number" name="quantity" class="form-control" min="1" required>
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Date of Sale</label>
+      <label class="form-label">Itariki</label>
       <input type="text" class="form-control" value="<?= date('Y-m-d H:i:s') ?>" readonly>
     </div>
 
     <div class="d-flex flex-column flex-md-row gap-2">
-      <button type="submit" class="btn btn-success">💾 Record Sale</button>
-      <a href="dashboard.php" class="btn btn-secondary">← Back to Dashboard</a>
+      <button type="submit" class="btn btn-success">💾 Emeza</button>
+      <a href="dashboard.php" class="btn btn-secondary">← Subira ahabanza</a>
     </div>
   </form>
 </div>

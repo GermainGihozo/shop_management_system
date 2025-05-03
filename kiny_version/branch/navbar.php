@@ -30,16 +30,16 @@ function active($page) {
           <a class="nav-link <?= active('view_stock.php') ?>" href="view_stock.php">Stock</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= active('record_sale.php') ?>" href="record_sale.php">Sell</a>
+          <a class="nav-link <?= active('record_sale.php') ?>" href="record_sale.php">Gurisha</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= active('sales_report.php') ?>" href="sales_report.php">Sales Report</a>
+          <a class="nav-link <?= active('sales_report.php') ?>" href="sales_report.php">Raporo y'ibyacurujwe</a>
         </li>
         <li class="nav-item">
           <a class="nav-link <?= active('profile.php') ?>" href="profile.php">Profile</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-danger <?= active('../logout.php') ?>" href="../logout.php">Logout</a>
+          <a class="nav-link text-danger <?= active('../logout.php') ?>" href="../logout.php">Sohoka</a>
         </li>
       </ul>
     </div>

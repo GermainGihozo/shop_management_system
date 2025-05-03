@@ -21,17 +21,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $confirm = $_POST['confirm_password'];
 
     if (!password_verify($current, $user['password'])) {
-        $error = "❌ Current password is incorrect.";
+        $error = "❌ Password isanzwe siyo.";
     } elseif ($new !== $confirm) {
-        $error = "❌ New passwords do not match.";
+        $error = "❌ Password mushyizemo ntizihura.";
     } elseif (strlen($new) < 6) {
-        $error = "❌ New password must be at least 6 characters.";
+        $error = "❌ password nshya igomba kuba igizwe nibura ninyuguti 6";
     } else {
         $hashed = password_hash($new, PASSWORD_DEFAULT);
         $update = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
         $update->execute([$hashed, $user_id]);
 
-        $_SESSION['success'] = "✅ Password changed successfully.";
+        $_SESSION['success'] = "✅ Ijambobanga ryahindutse!";
         header("Location: profile.php");
         exit;
     }
@@ -41,12 +41,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Change Password</title>
+  <title>Hindura password</title>
   <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body>
 <div class="container mt-5" style="max-width: 500px;">
-  <h4>🔐 Change Password</h4>
+  <h4>🔐 Hindura password</h4>
 
   <?php if ($error): ?>
     <div class="alert alert-danger"><?= $error ?></div>
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <form method="POST" class="mt-3">
     <div class="mb-3">
-      <label>Current Password</label>
+      <label>Password isanzwe</label>
       <div class="input-group">
         <input type="password" name="current_password" class="form-control" id="currentPassword" required>
         <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('currentPassword')">👁️</button>
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <div class="mb-3">
-      <label>New Password</label>
+      <label>Password nshya</label>
       <div class="input-group">
         <input type="password" name="new_password" class="form-control" id="newPassword" oninput="checkStrength()" required>
         <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('newPassword')">👁️</button>
@@ -74,14 +74,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <div class="mb-3">
-      <label>Confirm New Password</label>
+      <label>Ongera ushiremo password</label>
       <div class="input-group">
         <input type="password" name="confirm_password" class="form-control" id="confirmPassword" required>
         <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('confirmPassword')">👁️</button>
       </div>
     </div>
 
-    <button class="btn btn-primary">Change Password</button>
+    <button class="btn btn-primary">Hindura</button>
     <a href="profile.php" class="btn btn-secondary">Cancel</a>
   </form>
 </div>

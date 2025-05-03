@@ -41,24 +41,24 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body class="bg-light">
 <div class="container mt-5">
-  <h4 class="mb-3">📦 All Products</h4>
+  <h4 class="mb-3">📦 Ibicuruzwa byose</h4>
 
   <div class="row mb-3">
     <div class="col-12 col-md-6">
-      <input type="text" id="searchInput" class="form-control search-box" placeholder="🔍 Search products...">
+      <input type="text" id="searchInput" class="form-control search-box" placeholder="🔍 Shaka Ibicuruzwa...">
     </div>
   </div>
 
   <?php if (count($products) === 0): ?>
-    <div class="alert alert-warning mt-4">⚠️ No products found for this branch.</div>
+    <div class="alert alert-warning mt-4">⚠️ Nta gicuruzwa kirimo.</div>
   <?php else: ?>
     <div class="table-responsive">
       <table class="table table-bordered table-hover" id="productTable">
         <thead class="table-dark">
           <tr>
-            <th>Product Name</th>
-            <th>Quantity</th>
-            <th>Price (RWF)</th>
+            <th>Izina ry'igicuruzwa</th>
+            <th>Ingano</th>
+            <th>Igiciro (RWF)</th>
           </tr>
         </thead>
         <tbody>
@@ -77,7 +77,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <ul class="pagination mt-3" id="pagination"></ul>
     </nav>
 
-    <a href="dashboard.php" class="btn btn-secondary mt-2">← Back to Dashboard</a>
+    <a href="dashboard.php" class="btn btn-secondary mt-2">← ahabanza</a>
   <?php endif; ?>
 </div>
 <?php

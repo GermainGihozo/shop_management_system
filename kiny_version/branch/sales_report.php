@@ -62,7 +62,7 @@ foreach ($sales as $sale) {
 </head>
 <body>
 <div class="container mt-5">
-  <h4>📋 Sales Report</h4>
+  <h4>📋 Raporo y'ibyacurujwe</h4>
 
   <!-- Filter Form -->
   <form method="GET" class="row g-3 mb-4">
@@ -77,7 +77,7 @@ foreach ($sales as $sale) {
     <div class="col-sm-8 col-md-4">
       <label>Product</label>
       <select name="product_name" class="form-control">
-        <option value="">All Products</option>
+        <option value="">Ibicuruzwa byose</option>
         <?php foreach ($products as $product): ?>
           <option value="<?= $product['product_name'] ?>" <?= ($_GET['product_name'] ?? '') == $product['product_name'] ? 'selected' : '' ?>>
             <?= htmlspecialchars($product['product_name']) ?>
@@ -111,10 +111,10 @@ foreach ($sales as $sale) {
         <thead class="table-dark">
           <tr>
             <th>#</th>
-            <th>Product</th>
-            <th>Quantity</th>
+            <th>Igicuruzwa</th>
+            <th>Ingano</th>
             <th>Total (RWF)</th>
-            <th>Sale Date</th>
+            <th>Itariki</th>
           </tr>
         </thead>
         <tbody>
