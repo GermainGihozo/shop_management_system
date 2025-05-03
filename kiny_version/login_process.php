@@ -10,20 +10,21 @@ $stmt->execute([$username]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($user && password_verify($password, $user['password'])) {
+    // Set session variables
     $_SESSION['user_id'] = $user['id'];
-    $_SESSION['username'] = $user['username'];
     $_SESSION['role'] = $user['role'];
+    $_SESSION['username'] = $user['username'];
     $_SESSION['branch_id'] = $user['branch_id'];
 
     // Redirect based on role
-    if ($user['role'] == 'admin') {
+    if ($user['role'] === 'admin') {
         header("Location: admin/dashboard.php");
     } else {
         header("Location: branch/dashboard.php");
     }
     exit;
 } else {
-    $_SESSION['login_error'] = "Password mwakoresheje siyo.";
+    $_SESSION['error'] = "❌ Invalid username or password.";
     header("Location: login.php");
     exit;
 }

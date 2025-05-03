@@ -23,17 +23,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$name, $branch_id]);
 
         if ($stmt->rowCount() > 0) {
-            $message = "<div class='alert alert-warning'>🚫 Igicuruzwa gisanzwe kirimo!</div>";
+            $message = "<div class='alert alert-warning'>🚫 Product already exists!</div>";
         } else {
             $stmt = $conn->prepare("INSERT INTO products (name, price, quantity, branch_id) VALUES (?, ?, ?, ?)");
             if ($stmt->execute([$name, $price, $quantity, $branch_id])) {
-                $message = "<div class='alert alert-success'>✅ Kwinjiza igicuruzwa byakunze!</div>";
+                $message = "<div class='alert alert-success'>✅ Product added successfully!</div>";
             } else {
-                $message = "<div class='alert alert-danger'>❌ Kwinjiza byanze. Ongera ugerageze.</div>";
+                $message = "<div class='alert alert-danger'>❌ Failed to add product. Try again.</div>";
             }
         }
     } else {
-        $message = "<div class='alert alert-warning'>⚠️ Uzuza amakuru yose.</div>";
+        $message = "<div class='alert alert-warning'>⚠️ Please fill all fields correctly.</div>";
     }
 }
 ?>
@@ -42,33 +42,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
   <title>Add Product</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/bootstrap.min.css">
+  <style>
+    @media (max-width: 576px) {
+      h4 {
+        font-size: 1.2rem;
+      }
+      .btn {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+    }
+  </style>
 </head>
 <body class="bg-light">
-<div class="container mt-5">
-  <h4>➕ Injiza igicuruzwa</h4>
+<div class="container py-4>
+  <h4 class="mb-3">➕ Add New Product</h4>
   <?= $message ?>
-
-  <form method="POST" class="mt-4 p-4 bg-white rounded shadow-sm">
+  <form method="POST" class="p-4 bg-white rounded shadow-sm">
     <div class="mb-3">
-      <label>Izina ry'igicuruzwa</label>
+      <label class="form-label">Product Name</label>
       <input type="text" name="name" class="form-control" required>
     </div>
-
     <div class="mb-3">
-      <label>Igiciro (RWF)</label>
+      <label class="form-label">Price (RWF)</label>
       <input type="number" step="0.01" name="price" class="form-control" required>
     </div>
-
     <div class="mb-3">
-      <label>Ingano</label>
+      <label class="form-label">Quantity</label>
       <input type="number" name="quantity" class="form-control" required>
     </div>
-
-    <button type="submit" class="btn btn-primary">Emeza</button>
-    <a href="dashboard.php" class="btn btn-secondary">← Subira Inyuma</a>
+    <div class="d-flex flex-column flex-md-row gap-2">
+      <button type="submit" class="btn btn-primary">💾 Save Product</button>
+      <a href="dashboard.php" class="btn btn-secondary">← Back to Dashboard</a>
+    </div>
   </form>
 </div>
+<?php
+include '../includes/footer.php';
+?>
 <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -37,8 +37,25 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 <html>
 <head>
   <title>Edit Profile</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/bootstrap.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    @media (max-width: 768px) {
+      h4 {
+        font-size: 18px;
+      }
+      label {
+        font-size: 14px;
+      }
+      .form-control {
+        font-size: 14px;
+      }
+      .btn {
+        font-size: 14px;
+        padding: 0.45rem 0.8rem;
+      }
+    }
+  </style>
 </head>
 <body>
 <div class="container mt-5">
@@ -67,8 +84,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
     <a href="profile.php" class="btn btn-secondary">Back</a>
   </form>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/bootstrap.bundle.min.js"></script>
-
+<?php include '../includes/footer.php'; ?>
 </body>
 </html>

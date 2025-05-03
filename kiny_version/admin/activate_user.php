@@ -12,7 +12,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 $userId = $_GET['id'];
 
 if ($userId == $_SESSION['user_id']) {
-    header("Location: users.php?msg=You can't activate your own account.");
+    header("Location: users.php?msg=Ntushobora guhindura konte yawe bwite.");
     // die("You can't activate your own account.");
 }
 

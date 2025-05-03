@@ -10,28 +10,30 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'branch') {
 
 $branch_id = $_SESSION['branch_id'];
 $products = $conn->prepare("SELECT * FROM products WHERE branch_id = ?");
-$products->bind_param("i", $branch_id);
+$products->bindParam(1, $branch_id, PDO::PARAM_INT);
 $products->execute();
-$result = $products->get_result();
+$result = $products->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
 
 <!DOCTYPE html>
 <html>
 <head>
   <title>My Products</title>
+  
   <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body>
 <div class="container mt-5">
   <h4>📦 Products - <?= htmlspecialchars($_SESSION['name']) ?>’s Branch</h4>
-  <a href="add_product.php" class="btn btn-primary mb-3">➕ Injiza igicuruzwa</a>
+  <a href="add_product.php" class="btn btn-primary mb-3">➕ Add Product</a>
 
   <table class="table table-bordered table-striped">
     <thead>
       <tr>
-        <th>Izina</th>
-        <th>Igiciro (RWF)</th>
-        <th>Ingano</th>
+        <th>Name</th>
+        <th>Price (RWF)</th>
+        <th>Quantity</th>
         <th>Status</th>
         <th>Actions</th>
       </tr>
@@ -51,7 +53,7 @@ $result = $products->get_result();
           </td>
           <td>
             <a href="refill_product.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-info">Refill</a>
-            <a href="sell_product.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-success">Gurisha</a>
+            <a href="sell_product.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-success">Sell</a>
           </td>
         </tr>
       <?php endwhile; ?>

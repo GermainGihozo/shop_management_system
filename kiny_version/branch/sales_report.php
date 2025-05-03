@@ -56,28 +56,28 @@ foreach ($sales as $sale) {
 <html>
 <head>
   <title>Sales Report</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <div class="container mt-5">
-  <h4>📋 Raporo y'ibyacurujwe</h4>
+  <h4>📋 Sales Report</h4>
 
   <!-- Filter Form -->
   <form method="GET" class="row g-3 mb-4">
-    <div class="col-md-3">
-      <label>Guhera</label>
+    <div class="col-sm-6 col-md-3">
+      <label>Date From</label>
       <input type="date" name="start_date" class="form-control" value="<?= $_GET['start_date'] ?? '' ?>">
     </div>
-    <div class="col-md-3">
-      <label>Kugeza</label>
+    <div class="col-sm-6 col-md-3">
+      <label>Date To</label>
       <input type="date" name="end_date" class="form-control" value="<?= $_GET['end_date'] ?? '' ?>">
     </div>
-    <div class="col-md-4">
+    <div class="col-sm-8 col-md-4">
       <label>Product</label>
       <select name="product_name" class="form-control">
-        <option value="">Ibicuruzwa byose</option>
+        <option value="">All Products</option>
         <?php foreach ($products as $product): ?>
           <option value="<?= $product['product_name'] ?>" <?= ($_GET['product_name'] ?? '') == $product['product_name'] ? 'selected' : '' ?>>
             <?= htmlspecialchars($product['product_name']) ?>
@@ -85,14 +85,14 @@ foreach ($sales as $sale) {
         <?php endforeach; ?>
       </select>
     </div>
-    <div class="col-md-2 d-flex align-items-end">
-      <button class="btn btn-primary w-100">🔍 Filter</button>
+    <div class="col-sm-4 col-md-2 d-grid align-items-end">
+      <button class="btn btn-primary">🔍 Filter</button>
     </div>
   </form>
 
   <!-- Export Buttons -->
-  <div class="d-flex justify-content-end mb-3">
-    <a href="export_sales_pdf.php" class="btn btn-danger me-2">📄 Export PDF</a>
+  <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mb-3">
+    <a href="export_sales_pdf.php" class="btn btn-danger">📄 Export PDF</a>
     <a href="export_sales_csv.php" class="btn btn-success">📁 Export CSV</a>
   </div>
 
@@ -103,7 +103,7 @@ foreach ($sales as $sale) {
   </div>
 
   <?php if (!$sales): ?>
-    <div class="alert alert-warning">Nta makuru arimo ahuye nibyo mwahisemo.</div>
+    <div class="alert alert-warning">No sales found for selected filters.</div>
   <?php else: ?>
     <!-- Table -->
     <div class="table-responsive">
@@ -111,10 +111,10 @@ foreach ($sales as $sale) {
         <thead class="table-dark">
           <tr>
             <th>#</th>
-            <th>Igicuruzwa</th>
-            <th>Ingano</th>
+            <th>Product</th>
+            <th>Quantity</th>
             <th>Total (RWF)</th>
-            <th>Itariki</th>
+            <th>Sale Date</th>
           </tr>
         </thead>
         <tbody>
@@ -165,6 +165,9 @@ foreach ($sales as $sale) {
     </script>
   <?php endif; ?>
 </div>
+<?php
+include'../includes/footer.php';
+?>
 <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

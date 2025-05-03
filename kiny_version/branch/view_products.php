@@ -20,31 +20,45 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <html>
 <head>
   <title>View Products</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <style>
     .pagination { justify-content: center; }
     .search-box { max-width: 400px; }
+    @media (max-width: 576px) {
+      .search-box {
+        width: 100%;
+      }
+      .table {
+        font-size: 0.9rem;
+      }
+      .btn {
+        width: 100%;
+        margin-top: 10px;
+      }
+    }
   </style>
 </head>
 <body class="bg-light">
 <div class="container mt-5">
-  <h4>📦 Ibicuruzwa Byose</h4>
+  <h4 class="mb-3">📦 All Products</h4>
 
-  <div class="d-flex justify-content-between align-items-center mt-3">
-    <input type="text" id="searchInput" class="form-control search-box" placeholder="🔍 Search products...">
-    <!-- <a href="dashboard.php" class="btn btn-secondary ms-3">← Dashboard</a> -->
+  <div class="row mb-3">
+    <div class="col-12 col-md-6">
+      <input type="text" id="searchInput" class="form-control search-box" placeholder="🔍 Search products...">
+    </div>
   </div>
 
   <?php if (count($products) === 0): ?>
-    <div class="alert alert-warning mt-4">⚠️ Nta bicuruzwa birimo hano.</div>
+    <div class="alert alert-warning mt-4">⚠️ No products found for this branch.</div>
   <?php else: ?>
-    <div class="table-responsive mt-3">
+    <div class="table-responsive">
       <table class="table table-bordered table-hover" id="productTable">
         <thead class="table-dark">
           <tr>
-            <th>Igicuruzwa</th>
-            <th>Ingano</th>
-            <th>Igiciro (RWF)</th>
+            <th>Product Name</th>
+            <th>Quantity</th>
+            <th>Price (RWF)</th>
           </tr>
         </thead>
         <tbody>
@@ -57,16 +71,18 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <?php endforeach; ?>
         </tbody>
       </table>
-      <a href="dashboard.php" class="btn btn-secondary ms-3">← Dashboard</a>
     </div>
 
-    <!-- Pagination -->
     <nav>
-      <ul class="pagination" id="pagination"></ul>
+      <ul class="pagination mt-3" id="pagination"></ul>
     </nav>
+
+    <a href="dashboard.php" class="btn btn-secondary mt-2">← Back to Dashboard</a>
   <?php endif; ?>
 </div>
-
+<?php
+include'../includes/footer.php';
+?>
 <script>
 // Pagination & Search (Vanilla JS)
 const rowsPerPage = 10;
@@ -111,7 +127,6 @@ function filterTable() {
     row.style.display = match ? '' : 'none';
     if (match) visibleRows++;
   });
-  // Hide pagination if filtering
   pagination.style.display = query ? 'none' : 'flex';
 }
 
