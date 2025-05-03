@@ -35,13 +35,13 @@ $current_page = basename($_SERVER['PHP_SELF']); // Get current filename
           <a class="nav-link <?= $current_page == 'users.php' ? 'active' : '' ?>" href="users.php">👥 Users</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= $current_page == 'sales_report.php' ? 'active' : '' ?>" href="sales_report.php">📋 Sales Report</a>
+          <a class="nav-link <?= $current_page == 'sales_report.php' ? 'active' : '' ?>" href="sales_report.php">📋 Raporo y'ibyacurujwe</a>
         </li>
         <li class="nav-item">
           <a class="nav-link <?= $current_page == 'manage_products.php' ? 'active' : '' ?>" href="manage_products.php">📝 Manage Products</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= $current_page == 'products.php' ? 'active' : '' ?>" href="products.php">🛍 All Products</a>
+          <a class="nav-link <?= $current_page == 'products.php' ? 'active' : '' ?>" href="products.php">🛍 Ibicuruzwa byose</a>
         </li>
       </ul>
 
@@ -55,7 +55,7 @@ $current_page = basename($_SERVER['PHP_SELF']); // Get current filename
           <li><h6 class="dropdown-header"><?= htmlspecialchars($role) ?></h6></li>
           <li><a class="dropdown-item" href="profile.php">👤 Profile</a></li>
           <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="../logout.php">🚪 Logout</a></li>
+          <li><a class="dropdown-item" href="../logout.php">🚪 sohoka</a></li>
         </ul>
       </div>
     </div>

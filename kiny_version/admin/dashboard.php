@@ -66,13 +66,13 @@ $productsSoldData = array_column($branchSales, 'products_sold');
       <!-- Use col-md-4 for large screens and col-12 for full width on smaller screens -->
       <div class="col-md-4 col-12">
         <div class="card bg-primary text-white shadow p-3 animate__animated animate__fadeIn">
-          <h5><i class="bi bi-cash-stack"></i> Total Sales (RWF)</h5>
+          <h5><i class="bi bi-cash-stack"></i> ibyacurujwe byose (RWF)</h5>
           <h3><?php echo number_format($totalSales); ?></h3>
         </div>
       </div>
       <div class="col-md-4 col-12">
         <div class="card bg-success text-white shadow p-3 animate__animated animate__fadeIn">
-          <h5><i class="bi bi-box-seam"></i> Total Products</h5>
+          <h5><i class="bi bi-box-seam"></i> Ibicuruzwa byose</h5>
           <h3><?php echo $totalProducts; ?></h3>
         </div>
       </div>
@@ -88,7 +88,7 @@ $productsSoldData = array_column($branchSales, 'products_sold');
     <div class="row">
       <div class="col-12">
         <div class="card shadow p-3">
-          <h5>📍 Sales by Branch</h5>
+          <h5>📍 ibyacurujwe na buriwese</h5>
           <table class="table table-bordered mt-3">
             <thead class="table-dark">
               <tr>
@@ -108,7 +108,7 @@ $productsSoldData = array_column($branchSales, 'products_sold');
               </tr>
               <?php endforeach; ?>
               <?php if (empty($branchSales)): ?>
-              <tr><td colspan="4">No data available.</td></tr>
+              <tr><td colspan="4">Ntamakuru arimo.</td></tr>
               <?php else: ?>
               <tr class="table-secondary fw-bold">
                 <td>Total</td>

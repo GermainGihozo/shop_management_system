@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!empty($new_password)) {
         if ($new_password !== $confirm_password) {
-            $error = "Passwords do not match.";
+            $error = "Passwords Ntizihura.";
         } else {
             $hashed = password_hash($new_password, PASSWORD_DEFAULT);
             $stmt = $conn->prepare("UPDATE users SET full_name = ?, password = ? WHERE id = ?");

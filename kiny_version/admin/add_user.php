@@ -47,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
   <title>Add User</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <style>
     body {
@@ -63,11 +62,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 <div class="container mt-5">
-  <h4 class="mb-4">➕ Add New User</h4>
+  <h4 class="mb-4">➕ Injiza umukozi mushya</h4>
 
   <form method="POST">
     <div class="mb-3">
-      <label class="form-label">Full Name</label>
+      <label class="form-label">Amazina</label>
       <input type="text" name="full_name" class="form-control" required>
     </div>
 
@@ -85,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <label class="form-label">Role</label>
       <select name="role" class="form-select" required onchange="toggleBranch(this.value)">
         <option value="admin">Admin</option>
-        <option value="branch">Branch User</option>
+        <option value="branch">umukozi</option>
       </select>
     </div>
 
@@ -104,7 +103,6 @@ function toggleBranch(role) {
   branchDiv.style.display = (role === 'branch') ? 'block' : 'none';
 }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/bootstrap.bundle.min.js"></script>
 <?php include '../includes/footer.php'; ?>
 </body>
