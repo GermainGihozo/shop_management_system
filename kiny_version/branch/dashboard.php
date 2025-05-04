@@ -84,7 +84,7 @@ $today_sold_qty = $sold_stmt->fetchColumn() ?? 0;
       <a href="add_product.php" class="btn btn-success">➕ Injiza igicuruzwa</a>
       <a href="record_sale.php" class="btn btn-primary">💸 Curuza</a>
       <a href="view_products.php" class="btn btn-info">👀 Reba Ibicuruzwa</a>
-      <a href="sales_report.php" class="btn btn-secondary">📋 Raporo y'ibyacurujwe</a>
+      <a href="sales_report.php" class="btn btn-secondary">📋 Raporo y'Ibyacurujwe</a>
     </div>
   </div>
 </div>
