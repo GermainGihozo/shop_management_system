@@ -47,50 +47,56 @@ $today_sold_qty = $sold_stmt->fetchColumn() ?? 0;
     }
   </style>
 </head>
-<body class="bg-light">
-<div class="container py-4">
-  <h3 class="mb-4 text-center text-md-start">Hello, <?= htmlspecialchars($username) ?> 👋</h3>
+<body class="bg-light d-flex flex-column min-vh-100">
 
-  <div class="row g-4">
-    <div class="col-md-4 col-12">
-      <div class="card shadow-sm border-start border-success border-4">
-        <div class="card-body">
-          <h5 class="card-title">📦 Total Stock</h5>
-          <p class="card-text fs-4"><?= $total_stock ?> items</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4 col-12">
-      <div class="card shadow-sm border-start border-primary border-4">
-        <div class="card-body">
-          <h5 class="card-title">💰 Today’s Sales</h5>
-          <p class="card-text fs-4"><?= number_format($today_sales, 2) ?> RWF</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4 col-12">
-      <div class="card shadow-sm border-start border-warning border-4">
-        <div class="card-body">
-          <h5 class="card-title">🛒 Products Sold Today</h5>
-          <p class="card-text fs-4"><?= $today_sold_qty ?> items</p>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Main Content -->
+  <main class="flex-fill">
+    <div class="container py-4">
+      <h3 class="mb-4 text-center text-md-start">Hello, <?= htmlspecialchars($username) ?> 👋</h3>
 
-  <div class="mt-5">
-    <h5 class="text-center text-md-start">Quick Links</h5>
-    <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-md-start">
-      <a href="add_product.php" class="btn btn-success">➕ Add Product</a>
-      <a href="record_sale.php" class="btn btn-primary">💸 Record Sale</a>
-      <a href="view_products.php" class="btn btn-info">👀 View Products</a>
-      <a href="sales_report.php" class="btn btn-secondary">📋 Sales Report</a>
+      <div class="row g-4">
+        <div class="col-md-4 col-12">
+          <div class="card shadow-sm border-start border-success border-4">
+            <div class="card-body">
+              <h5 class="card-title">📦 Total Stock</h5>
+              <p class="card-text fs-4"><?= $total_stock ?> items</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-12">
+          <div class="card shadow-sm border-start border-primary border-4">
+            <div class="card-body">
+              <h5 class="card-title">💰 Today’s Sales</h5>
+              <p class="card-text fs-4"><?= number_format($today_sales, 2) ?> RWF</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-12">
+          <div class="card shadow-sm border-start border-warning border-4">
+            <div class="card-body">
+              <h5 class="card-title">🛒 Products Sold Today</h5>
+              <p class="card-text fs-4"><?= $today_sold_qty ?> items</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <h5 class="text-center text-md-start">Quick Links</h5>
+        <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-md-start">
+          <a href="add_product.php" class="btn btn-success">➕ Add Product</a>
+          <a href="record_sale.php" class="btn btn-primary">💸 Record Sale</a>
+          <a href="view_products.php" class="btn btn-info">👀 View Products</a>
+          <a href="sales_report.php" class="btn btn-secondary">📋 Sales Report</a>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-<?php
-include'../includes/footer.php';
-?>
-<script src="js/bootstrap.bundle.min.js"></script>
+  </main>
+
+  <!-- Footer -->
+   <?php 
+   include'../includes/footer.php';
+   ?>
+  <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
