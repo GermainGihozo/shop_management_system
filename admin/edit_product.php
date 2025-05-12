@@ -10,24 +10,41 @@ if (!isset($_GET['id'])) {
 
 $id = $_GET['id'];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $name = $_POST['name'];
-  $price = $_POST['price'];
-  $quantity = $_POST['quantity'];
-
-  $stmt = $conn->prepare("UPDATE products SET name = ?, price = ?, quantity = ? WHERE id = ?");
-  $stmt->execute([$name, $price, $quantity, $id]);
-
-  header("Location: products.php?msg=Product updated");
-  exit;
-}
-
+// Fetch product info
 $stmt = $conn->prepare("SELECT * FROM products WHERE id = ?");
 $stmt->execute([$id]);
 $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$product) {
   die("Product not found.");
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $name = $_POST['name'];
+  $price = $_POST['price'];
+  $new_quantity = $_POST['quantity'];
+
+  // Update name and price directly
+  $stmt = $conn->prepare("UPDATE products SET name = ?, price = ? WHERE id = ?");
+  $stmt->execute([$name, $price, $id]);
+
+  // If quantity has changed, request approval
+  if ($new_quantity != $product['quantity']) {
+    $branch_id = $product['branch_id'];
+    $admin_id = $_SESSION['user_id'];
+
+    $stmt = $conn->prepare("INSERT INTO product_update_requests 
+      (product_id, branch_id, requested_by_admin_id, new_quantity) 
+      VALUES (?, ?, ?, ?)");
+    $stmt->execute([$id, $branch_id, $admin_id, $new_quantity]);
+    
+    $msg = "Product updated (quantity change pending branch approval)";
+  } else {
+    $msg = "Product updated successfully";
+  }
+
+  header("Location: edit_product.php?msg=" . urlencode($msg));
+  exit;
 }
 ?>
 

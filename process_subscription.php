@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['email'])) {
     } else {
         echo "This email has already been used to subscribe.";
     }
+    
 } else {
     echo "Invalid request.";
 }
