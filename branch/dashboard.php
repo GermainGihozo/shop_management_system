@@ -88,6 +88,9 @@ $today_sold_qty = $sold_stmt->fetchColumn() ?? 0;
           <a href="record_sale.php" class="btn btn-primary">💸 Record Sale</a>
           <a href="view_products.php" class="btn btn-info">👀 View Products</a>
           <a href="sales_report.php" class="btn btn-secondary">📋 Sales Report</a>
+          <a href="insert_deposit.php" class="btn btn-secondary">📋 Insert deposit</a>
+          <a href="view_deposits.php" class="btn btn-secondary">📋 view deposits</a>
+        
         </div>
       </div>
     </div>

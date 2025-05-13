@@ -43,6 +43,9 @@ $current_page = basename($_SERVER['PHP_SELF']); // Get current filename
         <li class="nav-item">
           <a class="nav-link <?= $current_page == 'products.php' ? 'active' : '' ?>" href="products.php">🛍 All Products</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link <?= $current_page == 'admin_view_deposits.php' ? 'active' : '' ?>" href="admin_view_deposits.php">📝 View deposits</a>
+        </li>
       </ul>
 
       <!-- Profile Dropdown -->
