@@ -22,34 +22,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$today_deposit) {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Insert Daily Deposit</title>
-  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .deposit-box {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+  </style>
 </head>
 <body>
 <?php include 'navbar.php'; ?>
+
 <div class="container mt-5">
-  <h4>💵 Insert Today's Deposit</h4>
+  <div class="deposit-box">
+    <h4 class="mb-4 text-center">💵 Insert Today's Deposit</h4>
 
-  <?php if ($msg): ?>
-    <div class="alert alert-success"><?= $msg ?></div>
-  <?php endif; ?>
-
-  <?php if ($today_deposit): ?>
-    <div class="alert alert-info">
-      Today's deposit is already recorded: <strong><?= number_format($today_deposit['amount'], 2) ?> RWF</strong>
-    </div>
-  <?php else: ?>
-    <form method="POST">
-      <div class="mb-3">
-        <label for="amount" class="form-label">Amount (RWF):</label>
-        <input type="number" step="0.01" name="amount" id="amount" class="form-control" required>
+    <?php if ($msg): ?>
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <?= $msg ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
-      <button type="submit" class="btn btn-primary">Submit Deposit</button>
-    </form>
-  <?php endif; ?>
+    <?php endif; ?>
+
+    <?php if ($today_deposit): ?>
+      <div class="alert alert-info">
+        ✅ Today's deposit is already recorded: <strong><?= number_format($today_deposit['amount'], 2) ?> RWF</strong>
+      </div>
+    <?php else: ?>
+      <form method="POST">
+        <div class="mb-3">
+          <label for="amount" class="form-label">Amount (RWF)</label>
+          <input type="number" step="0.01" name="amount" id="amount" class="form-control" required>
+        </div>
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary">Submit Deposit</button>
+        </div>
+      </form>
+    <?php endif; ?>
+  </div>
 </div>
+<?php 
+include "../includes/footer.php";
+?>
 <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
