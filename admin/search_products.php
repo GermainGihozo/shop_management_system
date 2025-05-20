@@ -31,7 +31,8 @@ if ($products):
   <td><?= $product['quantity'] ?></td>
   <td><?= htmlspecialchars($product['branch_name']) ?></td>
   <td><?= $product['quantity'] < 5 ? '⚠️ Low Stock' : '✔️ OK' ?></td>
-  <td><a href="edit_product.php?id=<?= $product['id'] ?>" class="btn btn-sm btn-warning">Edit</a></td>
+  <td><a href="edit_product.php?id=<?= $product['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
+  </td>
 </tr>
 <?php endforeach;
 else: ?>
