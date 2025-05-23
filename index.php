@@ -108,7 +108,7 @@
         <div class="card-body">
           <h5 class="card-title">Admin Login</h5>
           <p class="card-text">Manage all branches, users, and inventory.</p>
-          <a href="admin/login.php" class="btn btn-primary btn-animated w-100">Admin Panel</a>
+          <a href="login.php" class="btn btn-primary btn-animated w-100">Admin Panel</a>
         </div>
       </div>
     </div>
@@ -117,7 +117,7 @@
         <div class="card-body">
           <h5 class="card-title">Branch Login</h5>
           <p class="card-text">Access your branch dashboard and manage sales.</p>
-          <a href="branch/login.php" class="btn btn-success btn-animated w-100">Branch Panel</a>
+          <a href="login.php" class="btn btn-success btn-animated w-100">Branch Panel</a>
         </div>
       </div>
     </div>
