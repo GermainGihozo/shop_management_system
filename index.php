@@ -5,6 +5,7 @@
   <title>Shop Management System</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="admin/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="web icon" type="jpg" href="includes/images/logo.jpg">
   <style>
     body {
       display: flex;

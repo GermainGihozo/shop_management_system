@@ -18,16 +18,17 @@ $product = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$product) {
   die("Product not found.");
 }
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $name = $_POST['name'];
   $price = $_POST['price'];
-  $quantity_to_add = (int)$_POST['quantity_to_add'];
+  $quantity_to_add = (int)$_POST['added_quantity']; // ✅ Fixed name
 
-  // Update name and price directly
+  // Update name and price
   $stmt = $conn->prepare("UPDATE products SET name = ?, price = ? WHERE id = ?");
   $stmt->execute([$name, $price, $id]);
 
-  if ($quantity_to_add > 0) {
+  if ($quantity_to_add !== 0) {
     $branch_id = $product['branch_id'];
     $admin_id = $_SESSION['user_id'];
 
@@ -36,9 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       VALUES (?, ?, ?, ?)");
     $stmt->execute([$id, $branch_id, $admin_id, $quantity_to_add]);
 
-    $msg = "Refill request submitted (pending branch approval)";
+    $msg = "Quantity change request submitted (pending branch approval)";
   } else {
-    $msg = "Product info updated (no quantity refill)";
+    $msg = "Product info updated (no quantity change)";
   }
 
   header("Location: edit_product.php?id=$id&msg=" . urlencode($msg));
@@ -76,19 +77,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <?php endif; ?>
 
   <form method="POST">
-    <div class="mb-2">
-      <label>Product Name</label>
-      <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($product['name']) ?>" required>
+    <div class="mb-3">
+      <label for="name" class="form-label">Product Name</label>
+      <input type="text" name="name" id="name" class="form-control" value="<?= htmlspecialchars($product['name']) ?>" required>
     </div>
+
     <div class="mb-3">
-      <label>Price (RWF)</label>
-      <input type="number" name="price" class="form-control" value="<?= $product['price'] ?>" required>
+      <label for="price" class="form-label">Price (RWF)</label>
+      <input type="number" name="price" id="price" class="form-control" value="<?= $product['price'] ?>" step="0.01" required>
     </div>
+
     <div class="mb-3">
-    <div class="mb-3">
-  <label>Quantity to Add (Refill)</label>
-  <input type="number" name="quantity_to_add" class="form-control" placeholder="e.g. 10" min="1">
-</div>
+      <label for="added_quantity" class="form-label">Quantity Change</label>
+      <input type="number" name="added_quantity" id="added_quantity" class="form-control" required>
+      <div class="form-text">Enter a positive number to increase, or a negative number to reduce the product quantity.</div>
+    </div>
+
     <button type="submit" class="btn btn-success">Save Changes</button>
     <a href="products.php" class="btn btn-secondary">Cancel</a>
   </form>

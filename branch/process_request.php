@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($action === 'approve') {
         // Update the product quantity
-        $stmt = $conn->prepare("UPDATE products SET quantity = ? WHERE id = ?");
+        $stmt = $conn->prepare("UPDATE products SET quantity + ? WHERE id = ?");
         $stmt->execute([$request['new_quantity'], $request['product_id']]);
     }
 
