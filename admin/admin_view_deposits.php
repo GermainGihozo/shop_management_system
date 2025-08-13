@@ -50,6 +50,8 @@ $exportParams = http_build_query(array_filter([
     <title>All Branch Deposits</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="web icon" type="jpg" href="includes/images/logo.jpg">
+  
 </head>
 <body>
 <?php include 'navbar.php'; ?>

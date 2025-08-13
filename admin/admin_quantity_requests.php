@@ -40,6 +40,8 @@ $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <title>All Quantity Update Requests</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link rel="web icon" type="jpg" href="includes/images/logo.jpg">
+  
   <style>
     @media (max-width: 576px) {
       h4 {

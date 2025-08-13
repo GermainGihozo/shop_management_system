@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shop Management Login</title>
   <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="web icon" type="jpg" href="includes/images/logo.jpg">
   <style>
     body {
       background: #f0f2f5;
