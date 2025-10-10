@@ -24,7 +24,7 @@ if ($user && password_verify($password, $user['password'])) {
     }
     exit;
 } else {
-    $_SESSION['error'] = "❌ Izina cg ijambobanga mwashyizemo ntibihura";
+    $_SESSION['error'] = "❌ Invalid username or password.";
     header("Location: login.php");
     exit;
 }

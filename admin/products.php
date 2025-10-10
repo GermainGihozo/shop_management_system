@@ -13,26 +13,8 @@ $branches = $conn->query("SELECT * FROM branches")->fetchAll(PDO::FETCH_ASSOC);
 <head>
   <title>Manage Products</title>
   <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link rel="web icon" type="jpg" href="includes/images/logo.jpg">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    @media (max-width: 768px) {
-      .table th, .table td {
-        font-size: 14px;
-      }
-      .card-header {
-        font-size: 16px;
-      }
-      .btn-sm {
-        padding: 0.3rem 0.6rem;
-        font-size: 14px;
-      }
-    }
-  </style>
 </head>
 <body>
-
 <?php
 $low_stock = $conn->query("SELECT COUNT(*) as count FROM products WHERE quantity < 5")->fetch(PDO::FETCH_ASSOC)['count'];
 if ($low_stock > 0): ?>
@@ -52,40 +34,38 @@ if ($low_stock > 0): ?>
         Branch: <?= htmlspecialchars($branch['name']) ?>
       </div>
       <div class="card-body">
-        <div class="table-responsive">
-          <table class="table table-bordered">
-            <thead class="table-light">
-              <tr>
-                <th>Product Name</th>
-                <th>Price (RWF)</th>
-                <th>Quantity</th>
-                <th>Actions</th>
+        <table class="table table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th>Product Name</th>
+              <th>Price (RWF)</th>
+              <th>Quantity</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php
+              $stmt = $conn->prepare("SELECT * FROM products WHERE branch_id = ?");
+              $stmt->execute([$branch['id']]);
+              $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+              $total_cost = 0;
+
+              foreach ($products as $product):
+                $product_cost = $product['price'] * $product['quantity'];
+                $total_cost += $product_cost;
+            ?>
+              <tr class="<?= ($product['quantity'] < 5) ? 'table-warning' : '' ?>">
+                <td><?= htmlspecialchars($product['name']) ?></td>
+                <td><?= number_format($product['price'], 0) ?></td>
+                <td><?= $product['quantity'] ?></td>
+                <td>
+                  <a href="edit_product.php?id=<?= $product['id'] ?>" class="btn btn-sm btn-primary">Edit</a>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              <?php
-                $stmt = $conn->prepare("SELECT * FROM products WHERE branch_id = ?");
-                $stmt->execute([$branch['id']]);
-                $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                $total_cost = 0;
-
-                foreach ($products as $product):
-                  $product_cost = $product['price'] * $product['quantity'];
-                  $total_cost += $product_cost;
-              ?>
-                <tr class="<?= ($product['quantity'] < 5) ? 'table-warning' : '' ?>">
-                  <td><?= htmlspecialchars($product['name']) ?></td>
-                  <td><?= number_format($product['price'], 0) ?></td>
-                  <td><?= $product['quantity'] ?></td>
-                  <td>
-                    <a href="edit_product.php?id=<?= $product['id'] ?>" class="btn btn-sm btn-primary">Edit</a>
-                  </td>
-                </tr>
-              <?php endforeach; ?>
-            </tbody>
-          </table>
-        </div>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
 
         <?php if (empty($products)): ?>
           <p class="text-muted">No products in this branch.</p>
@@ -110,6 +90,7 @@ if ($low_stock > 0): ?>
       </h5>
     </div>
   </div>
+
 </div>
 
 <script src="js/bootstrap.bundle.min.js"></script>

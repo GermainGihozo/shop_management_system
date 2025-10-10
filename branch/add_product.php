@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </style>
 </head>
 <body class="bg-light">
-<div class="container py-4>
+<div class="container py-4">
   <h4 class="mb-3">➕ Add New Product</h4>
   <?= $message ?>
   <form method="POST" class="p-4 bg-white rounded shadow-sm">
