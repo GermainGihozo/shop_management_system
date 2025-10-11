@@ -21,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $product_id = $_POST['product_id'];
     $quantity_sold = intval($_POST['quantity']);
 
+    
     // Fetch selected product details
     $stmt = $conn->prepare("SELECT quantity, price FROM products WHERE id = ? AND branch_id = ?");
     $stmt->execute([$product_id, $branch_id]);
