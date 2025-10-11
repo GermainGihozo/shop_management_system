@@ -38,8 +38,6 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 <head>
   <title>Edit Profile</title>
   <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link rel="web icon" type="jpg" href="includes/images/logo.jpg">
-  
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     @media (max-width: 768px) {

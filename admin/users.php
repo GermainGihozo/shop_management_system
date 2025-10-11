@@ -23,8 +23,6 @@ try {
 <head>
   <title>Manage Users</title>
   <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link rel="web icon" type="jpg" href="includes/images/logo.jpg">
-  
 </head>
 <body>
 

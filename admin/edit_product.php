@@ -52,7 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <title>Edit Product</title>
   <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link rel="web icon" type="jpg" href="includes/images/logo.jpg">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     html, body {

@@ -43,7 +43,6 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <html>
 <head>
   <title>Branch Products</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body>
@@ -59,42 +58,43 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <?php endif; ?>
 
   <form method="POST" class="row g-3 mb-5">
-    <div class="col-sm-6 col-md-4">
+    <div class="col-md-4">
       <input type="text" name="name" class="form-control" placeholder="Product Name" required>
     </div>
-    <div class="col-sm-6 col-md-3">
+    <div class="col-md-3">
       <input type="number" name="price" class="form-control" placeholder="Price (RWF)" required>
     </div>
-    <div class="col-sm-6 col-md-3">
+    <div class="col-md-3">
       <input type="number" name="quantity" class="form-control" placeholder="Quantity" required>
     </div>
-    <div class="col-sm-6 col-md-2 d-grid">
-      <button class="btn btn-primary">Add Product</button>
+    <div class="col-md-2">
+      <button class="btn btn-primary w-100">Add Product</button>
     </div>
   </form>
 
   <h4>📦 Current Products</h4>
-  <div class="table-responsive">
-    <table class="table table-bordered table-striped">
-      <thead class="table-dark">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Price (RWF)</th>
+        <th>Stock</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php foreach ($products as $product): ?>
         <tr>
-          <th>Name</th>
-          <th>Price (RWF)</th>
-          <th>Stock</th>
+          <td><?= htmlspecialchars($product['name']) ?></td>
+          <td><?= number_format($product['price'], 2) ?></td>
+          <td><?= $product['quantity'] ?></td>
         </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($products as $product): ?>
-          <tr>
-            <td><?= htmlspecialchars($product['name']) ?></td>
-            <td><?= number_format($product['price'], 2) ?></td>
-            <td><?= $product['quantity'] ?></td>
-          </tr>
-        <?php endforeach; ?>
-      </tbody>
-    </table>
-  </div>
+      <?php endforeach; ?>
+    </tbody>
+  </table>
 </div>
+<?php
+include'../includes/footer.php';
+?>
 <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

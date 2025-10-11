@@ -1,5 +1,6 @@
 <?php
 session_start();
+require 'navbar.php';
 require '../includes/db.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'branch') {
@@ -7,61 +8,98 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'branch') {
     exit;
 }
 
-$branch_id = $_SESSION['branch_id'];
+$branch_id = $_SESSION['branch_id'] ?? 0;
+$username = $_SESSION['username'] ?? 'Branch User';
 
-// Build query with filters
-$query = "
-    SELECT sales.*, products.name AS product_name 
-    FROM sales 
-    JOIN products ON sales.product_id = products.id 
-    WHERE sales.branch_id = ?
-";
-$params = [$branch_id];
+// Total products in stock
+$product_stmt = $conn->prepare("SELECT SUM(quantity) as total_stock FROM products WHERE branch_id = ?");
+$product_stmt->execute([$branch_id]);
+$total_stock = $product_stmt->fetchColumn() ?? 0;
 
-if (!empty($_GET['start_date']) && !empty($_GET['end_date'])) {
-    $query .= " AND DATE(sales.sold_at) BETWEEN ? AND ?";
-    $params[] = $_GET['start_date'];
-    $params[] = $_GET['end_date'];
-}
+// Today's sales total
+$sales_stmt = $conn->prepare("SELECT SUM(total_price) as total_sales FROM sales WHERE branch_id = ? AND DATE(sold_at) = CURDATE()");
+$sales_stmt->execute([$branch_id]);
+$today_sales = $sales_stmt->fetchColumn() ?? 0;
 
-if (!empty($_GET['product_name'])) {
-    $query .= " AND products.name = ?";
-    $params[] = $_GET['product_name'];
-}
-
-$query .= " ORDER BY sales.sold_at DESC";
-$stmt = $conn->prepare($query);
-$stmt->execute($params);
-$sales = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Set headers
-header('Content-Type: text/csv');
-header('Content-Disposition: attachment;filename=sales_report.csv');
-
-// Open output stream
-$output = fopen('php://output', 'w');
-
-// Column headers
-fputcsv($output, ['#', 'Product', 'Quantity', 'Total (RWF)', 'Sale Date']);
-
-// Rows
-$total = 0;
-foreach ($sales as $index => $sale) {
-    fputcsv($output, [
-        $index + 1,
-        $sale['product_name'],
-        $sale['quantity'],
-        number_format($sale['total_price'], 2),
-        $sale['sold_at']
-    ]);
-    $total += $sale['total_price'];
-}
-
-// Summary row
-fputcsv($output, []);
-fputcsv($output, ['Total Sales', '', '', number_format($total, 2)]);
-fputcsv($output, ['Total Transactions', '', '', count($sales)]);
-
-fclose($output);
-exit;
+// Products sold today
+$sold_stmt = $conn->prepare("SELECT SUM(quantity) as total_sold FROM sales WHERE branch_id = ? AND DATE(sold_at) = CURDATE()");
+$sold_stmt->execute([$branch_id]);
+$today_sold_qty = $sold_stmt->fetchColumn() ?? 0;
 ?>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Branch Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <style>
+    @media (max-width: 576px) {
+      h3, .card-title {
+        font-size: 1.2rem;
+      }
+      .card-text.fs-4 {
+        font-size: 1.1rem;
+      }
+      .btn {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+
+  <!-- Main Content -->
+  <main class="flex-fill">
+    <div class="container py-4">
+      <h3 class="mb-4 text-center text-md-start">Hello, <?= htmlspecialchars($username) ?> 👋</h3>
+
+      <div class="row g-4">
+        <div class="col-md-4 col-12">
+          <div class="card shadow-sm border-start border-success border-4">
+            <div class="card-body">
+              <h5 class="card-title">📦 Total Stock</h5>
+              <p class="card-text fs-4"><?= $total_stock ?> items</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-12">
+          <div class="card shadow-sm border-start border-primary border-4">
+            <div class="card-body">
+              <h5 class="card-title">💰 Today’s Sales</h5>
+              <p class="card-text fs-4"><?= number_format($today_sales, 2) ?> RWF</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-12">
+          <div class="card shadow-sm border-start border-warning border-4">
+            <div class="card-body">
+              <h5 class="card-title">🛒 Products Sold Today</h5>
+              <p class="card-text fs-4"><?= $today_sold_qty ?> items</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <h5 class="text-center text-md-start">Quick Links</h5>
+        <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-md-start">
+          <a href="add_product.php" class="btn btn-success">➕ Add Product</a>
+          <a href="record_sale.php" class="btn btn-primary">💸 Record Sale</a>
+          <a href="view_products.php" class="btn btn-info">👀 View Products</a>
+          <a href="sales_report.php" class="btn btn-secondary">📋 Sales Report</a>
+          <a href="insert_deposit.php" class="btn btn-secondary">📋 Insert deposit</a>
+          <a href="view_deposits.php" class="btn btn-secondary">📋 view deposits</a>
+        
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+   <?php 
+   include'../includes/footer.php';
+   ?>
+  <script src="js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

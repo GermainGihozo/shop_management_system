@@ -42,11 +42,9 @@ $productsSoldData = array_column($branchSales, 'products_sold');
 <head>
   <title>Admin Dashboard</title>
   <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link rel="icon" type="jpg" href="../includes/images/Untitled-1.png">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <style>
     body { overflow-x: hidden; display: flex; flex-direction: column; min-height: 100vh; }
     .content { margin-left: 0; padding: 20px; flex: 1; } /* Content will be flexible */
