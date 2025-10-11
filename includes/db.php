@@ -1,8 +1,8 @@
 <?php
-$host = 'sql101.infinityfree.com';
-$db   = 'if0_38863482_shop_db'; // your actual DB name
-$user = 'if0_38863482';
-$pass = 'RIQS3QENbnO';
+$host = 'localhost';
+$db   = 'shop_db'; // your actual DB name
+$user = 'root';
+$pass = '';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";

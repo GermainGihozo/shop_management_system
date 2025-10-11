@@ -21,7 +21,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $product_id = $_POST['product_id'];
     $quantity_sold = intval($_POST['quantity']);
 
-    
     // Fetch selected product details
     $stmt = $conn->prepare("SELECT quantity, price FROM products WHERE id = ? AND branch_id = ?");
     $stmt->execute([$product_id, $branch_id]);
@@ -74,22 +73,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <?= $message ?>
 
   <form method="POST" class="p-4 bg-white rounded shadow-sm">
-    <div class="mb-3">
-      <label class="form-label">Select Product</label>
-      <select name="product_id" class="form-select" required>
-        <option value="">-- Choose Product --</option>
-        <?php foreach ($products as $product): ?>
-          <option value="<?= $product['id'] ?>">
-            <?= htmlspecialchars($product['name']) ?> (Stock: <?= $product['quantity'] ?> | RWF <?= number_format($product['price'], 2) ?>)
-          </option>
-        <?php endforeach; ?>
-      </select>
-    </div>
+    <div class="mb-3 position-relative">
+  <label class="form-label">Search Product</label>
+  <input type="text" id="productSearch" class="form-control" placeholder="Type product name..." autocomplete="off">
+  <div id="suggestions" class="list-group position-absolute w-100" style="z-index:1000;"></div>
+</div>
 
-    <div class="mb-3">
-      <label class="form-label">Quantity Sold</label>
-      <input type="number" name="quantity" class="form-control" min="1" required>
-    </div>
+<input type="hidden" name="product_id" id="product_id">
+
+<div class="mb-3">
+  <label class="form-label">Product Price</label>
+  <input type="text" id="price" class="form-control" readonly>
+</div>
+
+<div class="mb-3">
+  <label class="form-label">Available Stock</label>
+  <input type="text" id="stock" class="form-control" readonly>
+</div>
+
+<div class="mb-3">
+  <label class="form-label">Quantity Sold</label>
+  <input type="number" name="quantity" id="quantity" class="form-control" min="1" required>
+</div>
+
 
     <div class="mb-3">
       <label class="form-label">Date of Sale</label>
@@ -106,5 +112,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 include'../includes/footer.php';
 ?>
 <script src="js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const searchInput = document.getElementById("productSearch");
+  const suggestions = document.getElementById("suggestions");
+
+  searchInput.addEventListener("input", async () => {
+    const query = searchInput.value.trim();
+    if (query.length < 2) {
+      suggestions.innerHTML = "";
+      return;
+    }
+
+    const response = await fetch(`search_product.php?query=${encodeURIComponent(query)}`);
+    const products = await response.json();
+
+    suggestions.innerHTML = "";
+    products.forEach(p => {
+      const item = document.createElement("a");
+      item.href = "#";
+      item.classList.add("list-group-item", "list-group-item-action");
+      item.textContent = `${p.name} (RWF ${p.price} | Stock: ${p.quantity})`;
+
+      item.onclick = e => {
+        e.preventDefault();
+        document.getElementById("product_id").value = p.id;
+        document.getElementById("price").value = p.price;
+        document.getElementById("stock").value = p.quantity;
+        searchInput.value = p.name;
+        suggestions.innerHTML = "";
+      };
+
+      suggestions.appendChild(item);
+    });
+  });
+});
+</script>
+
 </body>
 </html>
