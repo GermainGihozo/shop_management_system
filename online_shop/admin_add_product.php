@@ -30,6 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-dark text-light">
+    <?php
+require 'admin_navbar.php';
+    ?>
     <div class="container py-5">
         <h3>Add New Product</h3>
         <form method="POST" enctype="multipart/form-data" class="mt-3">
@@ -60,5 +63,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button class="btn btn-warning mt-3">Save Product</button>
         </form>
     </div>
+    <?php
+    include '../includes/footer.php';
+    
+    ?>
 </body>
 </html>

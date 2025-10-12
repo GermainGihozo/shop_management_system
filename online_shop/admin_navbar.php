@@ -21,7 +21,7 @@ $current_page = basename($_SERVER['PHP_SELF']); // Get current filename
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-3">
   <div class="container-fluid">
-    <a class="navbar-brand" href="dashboard.php">🏠 Admin Panel</a>
+    <a class="navbar-brand" href="../admin/dashboard.php">🏠 Admin Panel</a>
 
     <!-- Toggler Button -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar" aria-controls="adminNavbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,22 +32,22 @@ $current_page = basename($_SERVER['PHP_SELF']); // Get current filename
     <div class="collapse navbar-collapse" id="adminNavbar">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link <?= $current_page == 'users.php' ? 'active' : '' ?>" href="users.php">👥 Users</a>
+          <a class="nav-link <?= $current_page == 'users.php' ? 'active' : '' ?>" href="../admin/users.php">👥 Users</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= $current_page == 'sales_report.php' ? 'active' : '' ?>" href="sales_report.php">📋 Sales Report</a>
+          <a class="nav-link <?= $current_page == 'sales_report.php' ? 'active' : '' ?>" href="../admin/sales_report.php">📋 Sales Report</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= $current_page == 'manage_products.php' ? 'active' : '' ?>" href="manage_products.php">📝 Manage Products</a>
+          <a class="nav-link <?= $current_page == 'manage_products.php' ? 'active' : '' ?>" href="../admin/manage_products.php">📝 Manage Products</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= $current_page == 'products.php' ? 'active' : '' ?>" href="../online_shop/admin_add_product.php">🛍 Manage ONLINE SHOP</a>
+          <a class="nav-link <?= $current_page == 'products.php' ? 'active' : '' ?>" href="admin_add_product.php">🛍 Manage ONLINE SHOP</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= $current_page == 'admin_view_deposits.php' ? 'active' : '' ?>" href="admin_view_deposits.php">📝 View deposits</a>
+          <a class="nav-link <?= $current_page == 'admin_view_deposits.php' ? 'active' : '' ?>" href="../admin/admin_view_deposits.php">📝 View deposits</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= $current_page == 'admin_quantity_requests.php' ? 'active' : '' ?>" href="admin_quantity_requests.php">📝 View requests</a>
+          <a class="nav-link <?= $current_page == 'admin_quantity_requests.php' ? 'active' : '' ?>" href="../admin/admin_quantity_requests.php">📝 View requests</a>
         </li>
       </ul>
 
@@ -59,7 +59,7 @@ $current_page = basename($_SERVER['PHP_SELF']); // Get current filename
         </a>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownProfile">
           <li><h6 class="dropdown-header"><?= htmlspecialchars($role) ?></h6></li>
-          <li><a class="dropdown-item" href="profile.php">👤 Profile</a></li>
+          <li><a class="dropdown-item" href="../admin/profile.php">👤 Profile</a></li>
           <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item" href="../logout.php">🚪 Logout</a></li>
         </ul>
@@ -69,7 +69,7 @@ $current_page = basename($_SERVER['PHP_SELF']); // Get current filename
 </nav>
 
 <!-- Add Bootstrap Bundle JS -->
-<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script> 
 
 </body>
 </html>
