@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         move_uploaded_file($_FILES['image']['tmp_name'], "uploads/" . $image);
     }
 
-    $stmt = $pdo->prepare("INSERT INTO online_products (name, description, price, discount, image, is_new) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO online_products (name, description, price, discount, image, is_new) VALUES (?, ?, ?, ?, ?, ?)");
     $stmt->execute([$name, $desc, $price, $discount, $image, $is_new]);
 
     echo "<script>alert('Product added successfully!'); window.location='admin_add_product.php';</script>";

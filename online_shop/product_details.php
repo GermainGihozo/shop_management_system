@@ -1,7 +1,7 @@
 <?php
 require '../includes/db.php';
 $id = $_GET['id'] ?? 0;
-$stmt = $pdo->prepare("SELECT * FROM online_products WHERE id = ?");
+$stmt = $conn->prepare("SELECT * FROM online_products WHERE id = ?");
 $stmt->execute([$id]);
 $product = $stmt->fetch();
 if (!$product) die("Product not found");
