@@ -62,6 +62,7 @@ require 'admin_navbar.php';
             </div>
             <button class="btn btn-warning mt-3">Save Product</button>
         </form>
+       <a href="products.php"><button class="btn btn-warning mt-3">View Products</button></a>
     </div>
     <?php
     include '../includes/footer.php';
