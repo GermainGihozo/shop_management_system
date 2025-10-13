@@ -41,7 +41,7 @@ $current_page = basename($_SERVER['PHP_SELF']); // Get current filename
           <a class="nav-link <?= $current_page == 'manage_products.php' ? 'active' : '' ?>" href="../admin/manage_products.php">📝 Manage Products</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= $current_page == 'products.php' ? 'active' : '' ?>" href="admin_add_product.php">🛍 Manage ONLINE SHOP</a>
+          <a class="nav-link <?= $current_page == 'products.php' ? 'active' : '' ?>" href="products.php">🛍 Manage ONLINE SHOP</a>
         </li>
         <li class="nav-item">
           <a class="nav-link <?= $current_page == 'admin_view_deposits.php' ? 'active' : '' ?>" href="../admin/admin_view_deposits.php">📝 View deposits</a>
