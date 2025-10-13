@@ -125,7 +125,7 @@ if (isset($_SESSION['error'])) {
         }
 
         .btn-login:hover {
-            background: #4b0082; 
+            background: #820077ff; 
             color: white; 
             transform: translateY(-3px);
             box-shadow: 0 6px 12px rgba(75, 0, 130, 0.3);
