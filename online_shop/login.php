@@ -66,7 +66,7 @@ if (isset($_SESSION['error'])) {
     <style>
 
         body {
-            background: linear-gradient(135deg, #1d1a1f, #2d4d6d);
+            background: linear-gradient(135deg, #0b0a0bff, #2d4d6d);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -77,12 +77,12 @@ if (isset($_SESSION['error'])) {
         /* --- Form Container Style (Note: Using a darker background now, adjust text color if needed) --- */
         .container {
             /* Changed to a specific color, but you may need to adjust the text colors again */
-            background-color: rgba(67, 127, 154, 0.95); 
+            background: linear-gradient(120deg, #2b537aff, #0b0a0bff); 
             border-radius: 15px;
             width: 100%;
             max-width: 400px;
             padding: 35px 30px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 20px rgba(154, 53, 53, 0.15);
             animation: fadeInUp 1s ease forwards;
             transform: translateY(50px);
             opacity: 0;
@@ -105,10 +105,13 @@ if (isset($_SESSION['error'])) {
             font-weight: 500;
             color: #e0e0e0; /* Light gray text on blue container */
         }
+    #pwd{
+       color: #f1bfdaff;
+    }
 
         /* --- Input Field Focus Style --- */
         .form-control:focus {
-            border-color: #6a5acd;
+            border-color: #0d0448ff;
             box-shadow: 0 0 6px rgba(106, 90, 205, 0.5);
         }
 
@@ -147,6 +150,8 @@ if (isset($_SESSION['error'])) {
             <div class="mb-3 text-start">
                 <label for="password">Password</label>
                 <input type="password" name="Password" id="password" class="form-control" required>
+                <input type="checkbox" onclick="password.type= this.checked ? 'text' : 'password'">
+                 <label for="show password" id="pwd">Show password</label> 
             </div>
             <div class="mb-3">
                 <button class="btn btn-login w-100 py-2">Login</button>
