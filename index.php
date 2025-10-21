@@ -135,7 +135,7 @@ $otherProducts = $conn->query("SELECT * FROM online_products WHERE is_new = 0 OR
           <img src="online_shop/uploads/<?= htmlspecialchars($p['image']) ?>" alt="<?= htmlspecialchars($p['name']) ?>">
           <div class="card-body text-center">
             <h5><?= htmlspecialchars($p['name']) ?></h5>
-            <p>Price: <strong>$<?= $p['price'] ?></strong></p>
+            <p>Price: <strong>Rwf<?= $p['price'] ?></strong></p>
             <?php if ($p['discount'] > 0): ?>
               <span class="badge bg-success">-<?= $p['discount'] ?>%</span>
             <?php endif; ?>
@@ -155,7 +155,7 @@ $otherProducts = $conn->query("SELECT * FROM online_products WHERE is_new = 0 OR
           <img src="online_shop/uploads/<?= htmlspecialchars($p['image']) ?>" alt="<?= htmlspecialchars($p['name']) ?>">
           <div class="card-body text-center">
             <h5><?= htmlspecialchars($p['name']) ?></h5>
-            <p>Price: <strong>$<?= $p['price'] ?></strong></p>
+            <p>Price: <strong>Rwf<?= $p['price'] ?></strong></p>
             <a href="product_details.php?id=<?= $p['id'] ?>" class="btn btn-sm btn-outline-info mt-2">View</a>
           </div>
         </div>
