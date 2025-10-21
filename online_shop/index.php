@@ -155,7 +155,7 @@ $otherProducts = $conn->query("SELECT * FROM online_products WHERE is_new = 0 OR
           <img src="uploads/<?= htmlspecialchars($p['image']) ?>" alt="<?= htmlspecialchars($p['name']) ?>">
           <div class="card-body text-center">
             <h5><?= htmlspecialchars($p['name']) ?></h5>
-            <p>Price: <strong>$<?= $p['price'] ?></strong></p>
+            <p>Price: <strong>Rwf<?= $p['price'] ?></strong></p>
             <a href="product_details.php?id=<?= $p['id'] ?>" class="btn btn-sm btn-outline-info mt-2">View</a>
           </div>
         </div>
@@ -170,10 +170,10 @@ $otherProducts = $conn->query("SELECT * FROM online_products WHERE is_new = 0 OR
       <p class="mb-3">📩 We'd love to hear from you! Reach out anytime.</p>
       <div class="d-flex justify-content-center gap-4 fs-4 mb-3">
         <a href="https://wa.me/250784873039" target="_blank"><i class="bi bi-whatsapp"></i></a>
-        <a href="mailto:info@himshop.com"><i class="bi bi-envelope"></i></a>
-        <a href="https://facebook.com/yourpage" target="_blank"><i class="bi bi-facebook"></i></a>
-        <a href="https://x.com/yourprofile" target="_blank"><i class="bi bi-twitter-x"></i></a>
-        <a href="https://www.instagram.com/hillrock_worshipteam/" target="_blank"><i class="bi bi-instagram"></i></a>
+        <a href="#"><i class="bi bi-envelope"></i></a>
+        <a href="#" target="_blank"><i class="bi bi-facebook"></i></a>
+        <a href="#" target="_blank"><i class="bi bi-twitter-x"></i></a>
+        <a href="#" target="_blank"><i class="bi bi-instagram"></i></a>
       </div>
       <p class="small mb-0">&copy; <?= date('Y') ?> Himshop Trading. All Rights Reserved.</p>
     </div>
