@@ -7,7 +7,7 @@ $product = $stmt->fetch();
 if (!$product) die("Product not found");
 
 // Business WhatsApp number (without leading 0 for international format)
-$whatsappNumber = '250784873039';
+$whatsappNumber = '250782823729';
 ?>
 
 <!DOCTYPE html>
