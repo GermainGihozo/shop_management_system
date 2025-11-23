@@ -1,184 +1,207 @@
 <?php
 require '../includes/db.php';
-$newProducts = $conn->query("SELECT * FROM online_products WHERE is_new = 1 ORDER BY created_at DESC")->fetchAll();
-$otherProducts = $conn->query("SELECT * FROM online_products WHERE is_new = 0 ORDER BY created_at DESC")->fetchAll();
+
+// Get unique categories
+$categories = $conn->query("SELECT DISTINCT category FROM online_products ORDER BY category ASC")->fetchAll(PDO::FETCH_COLUMN);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Online Shop | Home</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-
-  <style>
-  body {
-    background-color: #111;
-    color: #fff;
-    padding-top: 70px; /* for fixed navbar space */
-  }
-
-  /* Navbar */
-  .navbar {
-    background-color: #222;
-  }
-  .navbar-brand img {
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop | Home</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    body {
+        padding-top: 75px;
+        background: #111;
+        color: #fff;
+    }
+    .product-card {
+        background: #1a1a1a;
+        border-radius: 10px;
+        padding: 10px;
+        text-align: center;
+        transition: 0.2s;
+    }
+    .product-card:hover {
+        transform: scale(1.05);
+        background: #222;
+    }
+    .product-img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+    .category-title {
+        border-left: 4px solid #ffc107;
+        padding-left: 10px;
+        margin-bottom: 15px;
+    }
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all .6s ease-in-out;
+}
+.fade-in.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+.carousel-item {
+    padding: 15px;
+}
+.product-card img {
+    height: 200px;
     object-fit: cover;
-    border-radius: 50%;
-  }
+}
+.social-icon {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+  transition: 0.3s;
+}
 
-  /* Product cards */
-  .card {
-    border: none;
-    border-radius: 10px;
-    overflow: hidden;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
-  }
+.social-icon:hover {
+  background: #0d6efd;
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
 
-  /* IMAGE FIX – keeps real proportions */
-  .card-img-top {
-    width: 100%;
-    height: 220px;              /* uniform height */
-    object-fit: contain;        /* show entire image */
-    background-color: #f5f5f5;  /* neutral bg for transparent/odd ratio images */
-  }
+.footer-link {
+  color: #aaa;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 6px;
+  transition: 0.3s;
+}
 
-  .card-body {
-    flex-grow: 1;
-  }
-
-  /* Footer */
-  footer {
-    background-color: #111;
-    color: #ccc;
-    text-align: center;
-    padding: 40px 0;
-    margin-top: 50px;
-  }
-  footer a {
-    color: #ccc;
-    transition: color 0.3s ease;
-  }
-  footer a:hover {
-    color: #00ff99;
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .card-img-top {
-      height: 180px;
-    }
-    .navbar-brand span {
-      display: none;
-    }
-    footer {
-      padding: 30px 10px;
-    }
-  }
-
-  @media (max-width: 576px) {
-    .card-img-top {
-      height: 160px;
-    }
-  }
+.footer-link:hover {
+  color: #fff;
+  padding-left: 4px;
+}
 </style>
-
 </head>
 <body>
-  <!-- HEADER -->
-  <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-sm">
+<?php
+// include "../includes/navbar.php";
+?>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="#">
-        <img src="../includes/images/logo.jpg" alt="Logo" width="40" height="40" class="me-2">
-        <span>Himshop</span>
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav align-items-center">
-          <li class="nav-item mx-2">
-            <a class="nav-link" href="#about">About</a>
-          </li>
-          <li class="nav-item mx-2">
-            <a href="login.php" class="btn btn-outline-light btn-sm">Login</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
 
-  <!-- MAIN CONTENT -->
-  <div class="container py-4">
-    <h1 class="mb-4 text-center">Welcome to Himshop Online</h1>
+        <!-- LOGO -->
+        <a class="navbar-brand d-flex align-items-center" href="index.php">
+             <img src="../includes/images/logo.jpg" alt="Logo" width="40" height="40" class="me-2">
+            <span class="fw-bold text-warning">HimShop</span>
+        </a>
 
-    <section id="about" class="text-center mb-5">
-      <p class="lead">We offer the best online products with great discounts and fast delivery 🚀</p>
-    </section>
+        <!-- TOGGLER FOR MOBILE -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <!-- NEW PRODUCTS -->
-    <h2 class="text-warning mb-4">🆕 New Arrivals</h2>
-    <div class="row g-4">
-      <?php foreach ($newProducts as $p): ?>
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-        <div class="card bg-light text-dark h-100">
-          <img src="uploads/<?= htmlspecialchars($p['image']) ?>" alt="<?= htmlspecialchars($p['name']) ?>">
-          <div class="card-body text-center">
-            <h5><?= htmlspecialchars($p['name']) ?></h5>
-            <p>Price: <strong>$<?= $p['price'] ?></strong></p>
-            <?php if ($p['discount'] > 0): ?>
-              <span class="badge bg-success">-<?= $p['discount'] ?>%</span>
-            <?php endif; ?>
-            <a href="product_details.php?id=<?= $p['id'] ?>" class="btn btn-sm btn-warning mt-2">View Details</a>
-          </div>
+        <!-- NAV ITEMS -->
+        <div class="collapse navbar-collapse" id="mainNav">
+
+            <!-- CENTER SEARCH BAR -->
+            <!-- <form class="d-flex mx-auto w-50" action="search.php" method="GET">
+                <input type="text" name="q" class="form-control form-control-sm"
+                       placeholder="Search for products...">
+            </form> -->
+
+            <!-- RIGHT SIDE BUTTONS -->
+            <div class="d-flex ms-auto">
+                <a href="login.php" class="btn btn-warning btn-sm px-3">Login</a>
+            </div>
+
         </div>
-      </div>
-      <?php endforeach; ?>
-    </div>
 
-    <!-- OTHER PRODUCTS -->
-    <h2 class="text-info mt-5 mb-4">🛍️ Other Products</h2>
-    <div class="row g-4">
-      <?php foreach ($otherProducts as $p): ?>
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-        <div class="card bg-light text-dark h-100">
-          <img src="uploads/<?= htmlspecialchars($p['image']) ?>" alt="<?= htmlspecialchars($p['name']) ?>">
-          <div class="card-body text-center">
-            <h5><?= htmlspecialchars($p['name']) ?></h5>
-            <p>Price: <strong>Rwf<?= $p['price'] ?></strong></p>
-            <a href="product_details.php?id=<?= $p['id'] ?>" class="btn btn-sm btn-outline-info mt-2">View</a>
-          </div>
+    </div>
+</nav>
+
+<!-- FIX LAYOUT SPACING -->
+
+
+<div class="container py-4">
+
+    <!-- SEARCH BAR -->
+    <div class="row mb-4">
+        <div class="col-md-6 mx-auto">
+            <input type="text" id="search" class="form-control form-control-lg" placeholder="Search products...">
         </div>
-      </div>
-      <?php endforeach; ?>
     </div>
-  </div>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="container">
-      <p class="mb-3">📩 We'd love to hear from you! Reach out anytime.</p>
-      <div class="d-flex justify-content-center gap-4 fs-4 mb-3">
-        <a href="https://wa.me/250784873039" target="_blank"><i class="bi bi-whatsapp"></i></a>
-        <a href="#"><i class="bi bi-envelope"></i></a>
-        <a href="#" target="_blank"><i class="bi bi-facebook"></i></a>
-        <a href="#" target="_blank"><i class="bi bi-twitter-x"></i></a>
-        <a href="#" target="_blank"><i class="bi bi-instagram"></i></a>
-      </div>
-      <p class="small mb-0">&copy; <?= date('Y') ?> Himshop Trading. All Rights Reserved.</p>
-    </div>
-  </footer>
+    <?php foreach ($categories as $cat): ?>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <h3 class="category-title mt-4"><?= htmlspecialchars($cat) ?> </h3>
+
+        <div class="row g-3 product-group" data-category="<?= htmlspecialchars($cat) ?>">
+
+            <?php
+            $stmt = $conn->prepare("SELECT * FROM online_products WHERE category = ? ORDER BY id DESC LIMIT 6");
+            $stmt->execute([$cat]);
+            $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($products as $p): ?>
+                <div class="col-6 col-md-4 col-lg-2 product-item" data-name="<?= strtolower($p['name']) ?>">
+                    <a href="product_details.php?id=<?= $p['id'] ?>" style="text-decoration:none;color:white;">
+                        <div class="product-card">
+                          <?php if ($p['is_new'] == 1): ?>
+    <span class="badge bg-danger position-absolute top-0 start-0 m-2">NEW</span>
+<?php endif; ?>
+
+                            <img src="uploads/<?= htmlspecialchars($p['image']) ?>" class="product-img">
+                            <h6 class="mt-2"><?= htmlspecialchars($p['name']) ?></h6>
+                            <small class="text-warning">RWF <?= number_format($p['price']) ?></small>
+                        </div>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+
+        </div>
+
+        <a href="view_category.php?cat=<?= urlencode($cat) ?>" class="btn btn-warning btn-sm mt-2">
+            See more →
+        </a>
+
+    <?php endforeach; ?>
+
+</div>
+<?php
+include "../includes/index_footer.php";
+?>
+
+
+<script>
+// LIVE SEARCH FILTER
+document.getElementById("search").addEventListener("keyup", function () {
+    let value = this.value.toLowerCase();
+
+    document.querySelectorAll(".product-item").forEach(item => {
+        let name = item.getAttribute("data-name");
+        item.style.display = name.includes(value) ? "" : "none";
+    });
+});
+document.addEventListener('DOMContentLoaded', () => {
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('show');
+            }
+        });
+    });
+
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.classList.add('fade-in');
+        observer.observe(card);
+    });
+});
+</script>
+
 </body>
 </html>
