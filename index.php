@@ -1,184 +1,208 @@
 <?php
 require 'includes/db.php';
-$newProducts = $conn->query("SELECT * FROM online_products WHERE is_new = 1 ORDER BY created_at DESC")->fetchAll();
-$otherProducts = $conn->query("SELECT * FROM online_products WHERE is_new = 0 ORDER BY created_at DESC")->fetchAll();
+
+// Get unique categories
+$categories = $conn->query("SELECT DISTINCT category FROM online_products ORDER BY category ASC")->fetchAll(PDO::FETCH_COLUMN);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Online Shop | Home</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-
-  <style>
-  body {
-    background-color: #111;
-    color: #fff;
-    padding-top: 70px; /* for fixed navbar space */
-  }
-
-  /* Navbar */
-  .navbar {
-    background-color: #222;
-  }
-  .navbar-brand img {
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop | Home</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+    body {
+        background: #111;
+        color: #fff;
+    }
+    .product-card {
+        background: #1a1a1a;
+        border-radius: 10px;
+        padding: 10px;
+        text-align: center;
+        transition: 0.2s;
+    }
+    .product-card:hover {
+        transform: scale(1.05);
+        background: #222;
+    }
+    .product-img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+    .category-title {
+        border-left: 4px solid #ffc107;
+        padding-left: 10px;
+        margin-bottom: 15px;
+    }
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all .6s ease-in-out;
+}
+.fade-in.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+.carousel-item {
+    padding: 15px;
+}
+.product-card img {
+    height: 200px;
     object-fit: cover;
+}
+.social-icon {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.social-icon:hover {
+  background: #0d6efd;
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.footer-link {
+  color: #aaa;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 6px;
+  transition: 0.3s;
+}
+
+.footer-link:hover {
+  color: #fff;
+  padding-left: 4px;
+}
+/* Floating WhatsApp Button */
+.whatsapp-float {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 60px;
+    height: 60px;
+    background: #25D366;
+    color: white;
     border-radius: 50%;
-  }
-
-  /* Product cards */
-  .card {
-    border: none;
-    border-radius: 10px;
-    overflow: hidden;
-    height: 100%;
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
-  }
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 9999;
+    transition: 0.3s;
+    animation: bounce 2s infinite;
+}
 
-  /* IMAGE FIX – keeps real proportions */
-  .card-img-top {
-    width: 100%;
-    height: 220px;              /* uniform height */
-    object-fit: contain;        /* show entire image */
-    background-color: #f5f5f5;  /* neutral bg for transparent/odd ratio images */
-  }
+.whatsapp-float:hover {
+    transform: scale(1.1);
+    background: #1ebe5d;
+}
 
-  .card-body {
-    flex-grow: 1;
-  }
-
-  /* Footer */
-  footer {
-    background-color: #111;
-    color: #ccc;
-    text-align: center;
-    padding: 40px 0;
-    margin-top: 50px;
-  }
-  footer a {
-    color: #ccc;
-    transition: color 0.3s ease;
-  }
-  footer a:hover {
-    color: #00ff99;
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .card-img-top {
-      height: 180px;
-    }
-    .navbar-brand span {
-      display: none;
-    }
-    footer {
-      padding: 30px 10px;
-    }
-  }
-
-  @media (max-width: 576px) {
-    .card-img-top {
-      height: 160px;
-    }
-  }
+/* Bouncing animation */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
 </style>
-
 </head>
 <body>
-  <!-- HEADER -->
-  <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-sm">
-    <div class="container">
-      <a class="navbar-brand fw-bold" href="#">
-        <img src="includes/images/logo.jpg" alt="Logo" width="40" height="40" class="me-2">
-        <span>Himshop</span>
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav align-items-center">
-          <li class="nav-item mx-2">
-            <a class="nav-link" href="#about">About</a>
-          </li>
-          <li class="nav-item mx-2">
-            <a href="online_shop/login.php" class="btn btn-outline-light btn-sm">Login</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+<?php
+include "includes/navbar.php";
+?>
 
-  <!-- MAIN CONTENT -->
-  <div class="container py-4">
-    <h1 class="mb-4 text-center">Welcome to Himshop Online</h1>
+<div class="container py-4">
 
-    <section id="about" class="text-center mb-5">
-      <p class="lead">We offer the best online products with great discounts and fast delivery 🚀</p>
-    </section>
-
-    <!-- NEW PRODUCTS -->
-    <h2 class="text-warning mb-4">🆕 New Arrivals</h2>
-    <div class="row g-4">
-      <?php foreach ($newProducts as $p): ?>
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-        <div class="card bg-light text-dark h-100">
-          <img src="online_shop/uploads/<?= htmlspecialchars($p['image']) ?>" alt="<?= htmlspecialchars($p['name']) ?>">
-          <div class="card-body text-center">
-            <h5><?= htmlspecialchars($p['name']) ?></h5>
-            <p>Price: <strong>Rwf<?= $p['price'] ?></strong></p>
-            <?php if ($p['discount'] > 0): ?>
-              <span class="badge bg-success">-<?= $p['discount'] ?>%</span>
-            <?php endif; ?>
-            <a href="online_shop/product_details.php?id=<?= $p['id'] ?>" class="btn btn-sm btn-warning mt-2">View Details</a>
-          </div>
+    <!-- SEARCH BAR -->
+    <div class="row mb-4">
+        <div class="col-md-6 mx-auto">
+            <input type="text" id="search" class="form-control form-control-lg" placeholder="Search products...">
         </div>
-      </div>
-      <?php endforeach; ?>
     </div>
 
-    <!-- OTHER PRODUCTS -->
-    <h2 class="text-info mt-5 mb-4">🛍️ Other Products</h2>
-    <div class="row g-4">
-      <?php foreach ($otherProducts as $p): ?>
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-        <div class="card bg-light text-dark h-100">
-          <img src="online_shop/uploads/<?= htmlspecialchars($p['image']) ?>" alt="<?= htmlspecialchars($p['name']) ?>">
-          <div class="card-body text-center">
-            <h5><?= htmlspecialchars($p['name']) ?></h5>
-            <p>Price: <strong>Rwf<?= $p['price'] ?></strong></p>
-            <a href="product_details.php?id=<?= $p['id'] ?>" class="btn btn-sm btn-outline-info mt-2">View</a>
-          </div>
+    <?php foreach ($categories as $cat): ?>
+
+        <h3 class="category-title mt-4"><?= htmlspecialchars($cat) ?> </h3>
+
+        <div class="row g-3 product-group" data-category="<?= htmlspecialchars($cat) ?>">
+
+            <?php
+            $stmt = $conn->prepare("SELECT * FROM online_products WHERE category = ? ORDER BY id DESC LIMIT 6");
+            $stmt->execute([$cat]);
+            $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($products as $p): ?>
+                <div class="col-6 col-md-4 col-lg-2 product-item" data-name="<?= strtolower($p['name']) ?>">
+                    <a href="online_shop/product_details.php?id=<?= $p['id'] ?>" style="text-decoration:none;color:white;">
+                        <div class="product-card">
+                          <?php if ($p['is_new'] == 1): ?>
+    <span class="badge bg-danger position-absolute top-0 start-0 m-2">NEW</span>
+<?php endif; ?>
+
+                            <img src="online_shop/uploads/<?= htmlspecialchars($p['image']) ?>" class="product-img">
+                            <h6 class="mt-2"><?= htmlspecialchars($p['name']) ?></h6>
+                            <small class="text-warning">RWF <?= number_format($p['price']) ?></small>
+                        </div>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+
         </div>
-      </div>
-      <?php endforeach; ?>
-    </div>
-  </div>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="container">
-      <p class="mb-3">📩 We'd love to hear from you! Reach out anytime.</p>
-      <div class="d-flex justify-content-center gap-4 fs-4 mb-3">
-        <a href="https://wa.me/250784873039" target="_blank"><i class="bi bi-whatsapp"></i></a>
-        <a href="mailto:info@himshop.com"><i class="bi bi-envelope"></i></a>
-        <a href="https://facebook.com/yourpage" target="_blank"><i class="bi bi-facebook"></i></a>
-        <a href="https://x.com/yourprofile" target="_blank"><i class="bi bi-twitter-x"></i></a>
-        <a href="https://www.instagram.com/hillrock_worshipteam/" target="_blank"><i class="bi bi-instagram"></i></a>
-      </div>
-      <p class="small mb-0">&copy; <?= date('Y') ?> Himshop Trading. All Rights Reserved.</p>
-    </div>
-  </footer>
+        <a href="online_shop/view_category.php?cat=<?= urlencode($cat) ?>" class="btn btn-warning btn-sm mt-2">
+            See more →
+        </a>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <?php endforeach; ?>
+
+</div>
+<?php
+include "includes/index_footer.php";
+?>
+
+
+<script>
+// LIVE SEARCH FILTER
+document.getElementById("search").addEventListener("keyup", function () {
+    let value = this.value.toLowerCase();
+
+    document.querySelectorAll(".product-item").forEach(item => {
+        let name = item.getAttribute("data-name");
+        item.style.display = name.includes(value) ? "" : "none";
+    });
+});
+document.addEventListener('DOMContentLoaded', () => {
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('show');
+            }
+        });
+    });
+
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.classList.add('fade-in');
+        observer.observe(card);
+    });
+});
+</script>
+<a href="https://wa.me/250788123456" class="whatsapp-float" target="_blank">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" viewBox="0 0 16 16">
+        <path d="M13.601 2.326A7.854 7.854 0 0 0 8.002.002C3.582.002.002 3.582.002 8c0 1.41.368 2.79 1.064 4.02L0 16l4.127-1.042A7.95 7.95 0 0 0 8 16c4.418 0 8-3.582 8-8 0-2.137-.833-4.146-2.399-5.674zM8 14.5a6.48 6.48 0 0 1-3.354-.92l-.24-.145-2.446.618.652-2.382-.157-.245A6.486 6.486 0 0 1 1.5 8c0-3.584 2.915-6.5 6.5-6.5 1.737 0 3.37.676 4.598 1.902A6.48 6.48 0 0 1 14.5 8c0 3.585-2.916 6.5-6.5 6.5zm3.538-4.365c-.198-.099-1.174-.578-1.356-.646-.182-.066-.315-.099-.448.1-.132.198-.514.646-.63.778-.116.133-.232.15-.43.05-.198-.1-.837-.308-1.594-.983-.59-.525-.99-1.175-1.106-1.373-.116-.198-.013-.304.087-.403.089-.088.198-.232.297-.348.1-.116.132-.198.198-.331.066-.132.033-.248-.017-.347-.05-.099-.448-1.078-.614-1.478-.162-.389-.328-.336-.448-.342l-.382-.007c-.132 0-.348.05-.53.248-.182.198-.695.68-.695 1.66 0 .98.712 1.926.811 2.059.1.132 1.402 2.137 3.396 2.996.475.205.845.327 1.133.418.476.151.909.13 1.252.079.383-.057 1.174-.48 1.34-.944.165-.464.165-.862.116-.944-.05-.083-.182-.132-.38-.231z"/>
+    </svg>
+</a>
+
 </body>
 </html>
