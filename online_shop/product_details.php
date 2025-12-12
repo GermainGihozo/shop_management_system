@@ -22,6 +22,7 @@ $whatsappNumber = '250782823729';
         background-color: #121212;
         color: #fff;
         overflow-x: hidden;
+        padding-top: 75px;
     }
 
     .card {
@@ -80,6 +81,39 @@ $whatsappNumber = '250782823729';
 
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
+    <div class="container">
+
+        <!-- LOGO -->
+        <a class="navbar-brand d-flex align-items-center" href="index.php">
+             <img src="../includes/images/logo.jpg" alt="Logo" width="40" height="40" class="me-2">
+            <span class="fw-bold text-warning">HimShop</span>
+        </a>
+
+        <!-- TOGGLER FOR MOBILE -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- NAV ITEMS -->
+        <div class="collapse navbar-collapse" id="mainNav">
+
+            <!-- CENTER SEARCH BAR -->
+            <!-- <form class="d-flex mx-auto w-50" action="search.php" method="GET">
+                <input type="text" name="q" class="form-control form-control-sm"
+                       placeholder="Search for products...">
+            </form> -->
+
+            <!-- RIGHT SIDE BUTTONS -->
+            <div class="d-flex ms-auto">
+                <a href="login.php" class="btn btn-warning btn-sm px-3">Login</a>
+            </div>
+
+        </div>
+
+    </div>
+</nav>
+
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-lg-10 col-md-11">
@@ -118,7 +152,9 @@ $whatsappNumber = '250782823729';
             </div>
         </div>
     </div>
-
+<?php
+include "../includes/index_footer.php";
+?>
     <script>
     document.getElementById('whatsappBtn').addEventListener('click', function() {
         const message = document.getElementById('message').value.trim();

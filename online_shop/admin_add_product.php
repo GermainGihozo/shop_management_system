@@ -5,6 +5,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
     $desc = $_POST['description'];
     $price = $_POST['price'];
+    $category = $_POST['category'];
     $discount = $_POST['discount'];
     $is_new = isset($_POST['is_new']) ? 1 : 0;
 
@@ -15,8 +16,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         move_uploaded_file($_FILES['image']['tmp_name'], "uploads/" . $image);
     }
 
-    $stmt = $conn->prepare("INSERT INTO online_products (name, description, price, discount, image, is_new) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->execute([$name, $desc, $price, $discount, $image, $is_new]);
+// $stmt = $conn->prepare("INSERT INTO online_products (name, category, price, discount, description, image) 
+// VALUES (?, ?, ?, ?, ?, ?)");
+// $stmt->execute([$name, $category, $price, $discount, $description, $imageName]);
+
+    $stmt = $conn->prepare("INSERT INTO online_products (name, category, description, price, discount, image, is_new) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->execute([$name, $category, $desc, $price, $discount, $image, $is_new]);
 
     echo "<script>alert('Product added successfully!'); window.location='admin_add_product.php';</script>";
 }
@@ -56,6 +61,20 @@ require 'admin_navbar.php';
                 <label>Product Image:</label>
                 <input type="file" name="image" class="form-control" required>
             </div>
+            <div class="mb-3">
+    <label class="form-label">Category</label>
+    <select name="category" class="form-control" required>
+        <option value="">-- Select Category --</option>
+        <option value="Clothes">Clothes</option>
+        <option value="Electronics">Electronics</option>
+        <option value="Shoes">Shoes</option>
+        <option value="Beauty">Beauty</option>
+        <option value="Bags">Bags</option>
+        <option value="Food">Food</option>
+        <option value="Accessories">Accessories</option>
+    </select>
+</div>
+
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" name="is_new" id="is_new" checked>
                 <label class="form-check-label" for="is_new">Mark as New Product</label>

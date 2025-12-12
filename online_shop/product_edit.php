@@ -64,6 +64,16 @@ include'admin_navbar.php';
           <img src="uploads/<?php echo $product['image']; ?>" width="120" class="mb-2 rounded">
           <input type="file" name="image" class="form-control">
         </div>
+        <select name="category" class="form-control">
+    <option <?= $product['category']=='Clothes'?'selected':'' ?>>Clothes</option>
+    <option <?= $product['category']=='Electronics'?'selected':'' ?>>Electronics</option>
+    <option <?= $product['category']=='Shoes'?'selected':'' ?>>Shoes</option>
+    <option <?= $product['category']=='Beauty'?'selected':'' ?>>Beauty</option>
+    <option <?= $product['category']=='Bags'?'selected':'' ?>>Bags</option>
+    <option <?= $product['category']=='Food'?'selected':'' ?>>Food</option>
+    <option <?= $product['category']=='Accessories'?'selected':'' ?>>Accessories</option>
+</select>
+
 
         <div class="text-end">
           <button type="submit" class="btn btn-success">Update</button>
