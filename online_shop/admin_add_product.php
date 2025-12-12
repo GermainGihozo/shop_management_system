@@ -22,6 +22,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt = $conn->prepare("INSERT INTO online_products (name, category, description, price, discount, image, is_new) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $stmt->execute([$name, $category, $desc, $price, $discount, $image, $is_new]);
+    // Insert category if it doesn't exist
+$catStmt = $conn->prepare("INSERT IGNORE INTO categories(category_name) VALUES(?)");
+$catStmt->execute([$category]);
+
 
     echo "<script>alert('Product added successfully!'); window.location='admin_add_product.php';</script>";
 }
@@ -33,6 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Add Product</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css">
+<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+
 </head>
 <body class="bg-dark text-light">
     <?php
@@ -61,19 +68,12 @@ require 'admin_navbar.php';
                 <label>Product Image:</label>
                 <input type="file" name="image" class="form-control" required>
             </div>
-            <div class="mb-3">
+      <div class="mb-3">
     <label class="form-label">Category</label>
-    <select name="category" class="form-control" required>
-        <option value="">-- Select Category --</option>
-        <option value="Clothes">Clothes</option>
-        <option value="Electronics">Electronics</option>
-        <option value="Shoes">Shoes</option>
-        <option value="Beauty">Beauty</option>
-        <option value="Bags">Bags</option>
-        <option value="Food">Food</option>
-        <option value="Accessories">Accessories</option>
-    </select>
+    <input name="category" id="categoryInput" class="form-control">
 </div>
+
+
 
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" name="is_new" id="is_new" checked>
@@ -87,5 +87,21 @@ require 'admin_navbar.php';
     include '../includes/footer.php';
     
     ?>
+    <script>
+    fetch('get_categories.php')
+        .then(res => res.json())
+        .then(data => {
+            let input = document.querySelector("#categoryInput");
+            let tagify = new Tagify(input, {
+                whitelist: data,
+                dropdown: {
+                    enabled: 1,
+                    maxItems: 5,
+                    classname: "tags-look"
+                }
+            });
+        });
+</script>
+
 </body>
 </html>
