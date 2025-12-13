@@ -16,6 +16,7 @@
       justify-content: center;
       align-items: center;
     }
+    
     .login-box {
       width: 100%;
       max-width: 400px;
