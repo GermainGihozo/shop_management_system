@@ -21,6 +21,15 @@ $totalProducts = $stmt->fetch(PDO::FETCH_ASSOC)['total_products'] ?? 0;
 $stmt = $conn->query("SELECT COUNT(*) AS total_users FROM users");
 $totalUsers = $stmt->fetch(PDO::FETCH_ASSOC)['total_users'] ?? 0;
 
+// Count pending products
+$stmt = $conn->query("SELECT COUNT(*) AS pending_count FROM products WHERE status = 'pending'");
+$pendingCount = $stmt->fetch(PDO::FETCH_ASSOC)['pending_count'] ?? 0;
+
+// Count rejected products
+$stmt = $conn->query("SELECT COUNT(*) AS rejected_count FROM products WHERE status = 'rejected'");
+$rejectedCount = $stmt->fetch(PDO::FETCH_ASSOC)['rejected_count'] ?? 0;
+
+
 $stmt = $conn->query("SELECT 
     b.name AS branch_name,
     SUM(s.total_price) AS branch_sales,
@@ -70,6 +79,7 @@ $productsSoldData = array_column($branchSales, 'products_sold');
           <h3><?php echo number_format($totalSales); ?></h3>
         </div>
       </div>
+      
       <div class="col-md-4 col-12">
         <div class="card bg-success text-white shadow p-3 animate__animated animate__fadeIn">
           <h5><i class="bi bi-box-seam"></i> Total Products</h5>
@@ -82,6 +92,20 @@ $productsSoldData = array_column($branchSales, 'products_sold');
           <h3><?php echo $totalUsers; ?></h3>
         </div>
       </div>
+      <div class="col-md-6 col-lg-6 col-xl-4 col-12">
+    <div class="card bg-danger text-white shadow p-3 animate__animated animate__fadeIn">
+        <h5><i class="bi bi-x-circle"></i> Rejected Products</h5>
+        <h3><?= $rejectedCount ?></h3>
+    </div>
+</div>
+
+<div class="col-md-6 col-lg-6 col-xl-4 col-12">
+    <div class="card bg-info text-white shadow p-3 animate__animated animate__fadeIn">
+        <h5><i class="bi bi-hourglass-split"></i> Pending Approvals</h5>
+        <h3><?= $pendingCount ?></h3>
+    </div>
+</div>
+
     </div>
 
     <!-- Branch Sales Summary -->
@@ -137,6 +161,7 @@ $productsSoldData = array_column($branchSales, 'products_sold');
           <canvas id="productsChart"></canvas>
         </div>
       </div>
+      
     </div>
 
   </div>

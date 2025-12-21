@@ -1,5 +1,5 @@
 <?php
-// session_start(); // Uncomment if session not started elsewhere
+// session_start(); 
 $username = $_SESSION['username'] ?? 'User';
 $role = ucfirst($_SESSION['role'] ?? 'Role');
 $profile_img = '../includes/images/IMG_20230603_085143_694.jpg'; 
@@ -48,6 +48,9 @@ $current_page = basename($_SERVER['PHP_SELF']); // Get current filename
         </li>
         <li class="nav-item">
           <a class="nav-link <?= $current_page == 'admin_quantity_requests.php' ? 'active' : '' ?>" href="admin_quantity_requests.php">📝 View requests</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link <?= $current_page == 'products_pending.php' ? 'active' : '' ?>" href="products_pending.php">📝 Pending Products</a>
         </li>
       </ul>
 
