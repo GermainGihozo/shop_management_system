@@ -29,6 +29,9 @@ function active($page) {
           <a class="nav-link <?= active('profile.php') ?>" href="profile.php">Profile</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link <?= active('pending_rejected.php') ?>" href="pending_rejected.php">Pending products</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link text-danger <?= active('../logout.php') ?>" href="../logout.php">Logout</a>
         </li>
       </ul>

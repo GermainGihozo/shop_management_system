@@ -6,95 +6,97 @@ require 'navbar.php';
 requireRole('branch');
 
 $branch_id = $_SESSION['branch_id'];
-$error = "";
-
-// Check for success message from redirect
-$success = $_SESSION['success'] ?? '';
-unset($_SESSION['success']);
-
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name']);
-    $price = $_POST['price'];
-    $qty = $_POST['quantity'];
-
-    // Check if product already exists for this branch
-    $check = $conn->prepare("SELECT id FROM products WHERE name = ? AND branch_id = ?");
-    $check->execute([$name, $branch_id]);
-
-    if ($check->fetch()) {
-        $error = "⚠️ Product '$name' already exists in your branch.";
-    } else {
-        $stmt = $conn->prepare("INSERT INTO products (name, price, quantity, branch_id) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$name, $price, $qty, $branch_id]);
-
-        $_SESSION['success'] = "✅ Product '$name' added successfully.";
-        header("Location: view_stock.php"); // reload to show message
-        exit;
-    }
-}
 
 // Fetch products for current branch
-$stmt = $conn->prepare("SELECT * FROM products WHERE branch_id = ?");
+$stmt = $conn->prepare("
+    SELECT *
+    FROM products
+    WHERE branch_id = ?
+    ORDER BY created_at DESC
+");
 $stmt->execute([$branch_id]);
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Branch Products</title>
+  <title>Branch Stock</title>
   <link rel="stylesheet" href="css/bootstrap.min.css">
+  <style>
+    .badge-status {
+        font-size: 0.8rem;
+    }
+  </style>
 </head>
-<body>
+<body class="bg-light">
+
 <div class="container mt-5">
-  <h4>🛒 Add New Product</h4>
 
-  <?php if ($error): ?>
-    <div class="alert alert-danger"><?= $error ?></div>
-  <?php endif; ?>
+  <h4 class="mb-3">📦 Branch Products</h4>
 
-  <?php if ($success): ?>
-    <div class="alert alert-success"><?= $success ?></div>
-  <?php endif; ?>
+  <div class="card shadow-sm">
+    <div class="card-body">
 
-  <form method="POST" class="row g-3 mb-5">
-    <div class="col-md-4">
-      <input type="text" name="name" class="form-control" placeholder="Product Name" required>
-    </div>
-    <div class="col-md-3">
-      <input type="number" name="price" class="form-control" placeholder="Price (RWF)" required>
-    </div>
-    <div class="col-md-3">
-      <input type="number" name="quantity" class="form-control" placeholder="Quantity" required>
-    </div>
-    <div class="col-md-2">
-      <button class="btn btn-primary w-100">Add Product</button>
-    </div>
-  </form>
+      <?php if (empty($products)): ?>
+        <div class="alert alert-info mb-0">
+          No products added yet.
+        </div>
+      <?php else: ?>
 
-  <h4>📦 Current Products</h4>
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Price (RWF)</th>
-        <th>Stock</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php foreach ($products as $product): ?>
-        <tr>
-          <td><?= htmlspecialchars($product['name']) ?></td>
-          <td><?= number_format($product['price'], 2) ?></td>
-          <td><?= $product['quantity'] ?></td>
-        </tr>
-      <?php endforeach; ?>
-    </tbody>
-  </table>
+      <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>Product</th>
+            <th>Price (RWF)</th>
+            <th>Stock</th>
+            <th>Status</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <?php foreach ($products as $product): ?>
+            <tr>
+              <td><?= htmlspecialchars($product['name']) ?></td>
+              <td><?= number_format($product['price'], 2) ?></td>
+              <td><?= $product['quantity'] ?></td>
+              <td>
+                <?php if ($product['status'] === 'approved'): ?>
+                  <span class="badge bg-success badge-status">Approved</span>
+                <?php elseif ($product['status'] === 'pending'): ?>
+                  <span class="badge bg-warning text-dark badge-status">Pending</span>
+                <?php else: ?>
+                  <span class="badge bg-danger badge-status">Rejected</span>
+                <?php endif; ?>
+              </td>
+              <td>
+                <?php if ($product['status'] === 'rejected'): ?>
+                  <small class="text-danger">
+                    <?= htmlspecialchars($product['rejection_reason'] ?? 'No reason provided') ?>
+                  </small>
+                <?php elseif ($product['status'] === 'pending'): ?>
+                  <small class="text-muted">Awaiting admin approval</small>
+                <?php else: ?>
+                  <small class="text-success">Ready for sale</small>
+                <?php endif; ?>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+
+        </tbody>
+      </table>
+      </div>
+
+      <?php endif; ?>
+
+    </div>
+  </div>
+
 </div>
-<?php
-include'../includes/footer.php';
-?>
+
+<?php include '../includes/footer.php'; ?>
 <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -18,18 +18,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $quantity = intval($_POST['quantity']);
 
     if ($name && $price > 0 && $quantity >= 0) {
-        // Check if product with same name already exists for this branch
+
+        // Check duplicate product for the same branch
         $stmt = $conn->prepare("SELECT id FROM products WHERE name = ? AND branch_id = ?");
         $stmt->execute([$name, $branch_id]);
 
         if ($stmt->rowCount() > 0) {
             $message = "<div class='alert alert-warning'>🚫 Product already exists!</div>";
         } else {
-            $stmt = $conn->prepare("INSERT INTO products (name, price, quantity, branch_id) VALUES (?, ?, ?, ?)");
+
+            // Insert pending product
+            $stmt = $conn->prepare("
+                INSERT INTO products (name, price, quantity, branch_id, status)
+                VALUES (?, ?, ?, ?, 'pending')
+            ");
+
             if ($stmt->execute([$name, $price, $quantity, $branch_id])) {
-                $message = "<div class='alert alert-success'>✅ Product added successfully!</div>";
+                $message = "
+                <div class='alert alert-success'>
+                    ✅ Product submitted and is awaiting admin approval!
+                </div>";
             } else {
-                $message = "<div class='alert alert-danger'>❌ Failed to add product. Try again.</div>";
+                $message = "<div class='alert alert-danger'>❌ Failed to submit product.</div>";
             }
         }
     } else {
@@ -37,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -46,13 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <style>
     @media (max-width: 576px) {
-      h4 {
-        font-size: 1.2rem;
-      }
-      .btn {
-        width: 100%;
-        margin-bottom: 10px;
-      }
+      h4 { font-size: 1.2rem; }
+      .btn { width: 100%; margin-bottom: 10px; }
     }
   </style>
 </head>
@@ -60,28 +64,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="container py-4">
   <h4 class="mb-3">➕ Add New Product</h4>
   <?= $message ?>
+
   <form method="POST" class="p-4 bg-white rounded shadow-sm">
     <div class="mb-3">
       <label class="form-label">Product Name</label>
       <input type="text" name="name" class="form-control" required>
     </div>
+
     <div class="mb-3">
       <label class="form-label">Price (RWF)</label>
       <input type="number" step="0.01" name="price" class="form-control" required>
     </div>
+
     <div class="mb-3">
       <label class="form-label">Quantity</label>
       <input type="number" name="quantity" class="form-control" required>
     </div>
+
     <div class="d-flex flex-column flex-md-row gap-2">
-      <button type="submit" class="btn btn-primary">💾 Save Product</button>
+      <button type="submit" class="btn btn-primary">💾 Submit for Approval</button>
       <a href="dashboard.php" class="btn btn-secondary">← Back to Dashboard</a>
     </div>
   </form>
 </div>
-<?php
-include '../includes/footer.php';
-?>
+
+<?php include '../includes/footer.php'; ?>
 <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

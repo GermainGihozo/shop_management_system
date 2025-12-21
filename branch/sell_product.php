@@ -11,16 +11,21 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'branch') {
 $branch_id = $_SESSION['branch_id'];
 $product_id = intval($_GET['id']);
 
-$check = $conn->prepare("SELECT * FROM products WHERE id = ? AND branch_id = ?");
-$check->bind_param("ii", $product_id, $branch_id);
-$check->execute();
-$result = $check->get_result();
+// ✅ FIX: PDO product check
+$check = $conn->prepare(
+    "SELECT * FROM products 
+     WHERE id = :id AND branch_id = :branch_id AND status = 'approved'"
+);
+$check->execute([
+    ':id' => $product_id,
+    ':branch_id' => $branch_id
+]);
 
-if ($result->num_rows !== 1) {
+$product = $check->fetch(PDO::FETCH_ASSOC);
+
+if (!$product) {
     die("Product not found or not accessible.");
 }
-
-$product = $result->fetch_assoc();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sold_qty = intval($_POST['quantity']);
@@ -33,20 +38,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $price_each = $product['price'];
     $total_price = $sold_qty * $price_each;
 
-    // 1. Update stock
-    $update = $conn->prepare("UPDATE products SET quantity = ? WHERE id = ?");
-    $update->bind_param("ii", $new_quantity, $product_id);
-    $update->execute();
+    // ✅ FIX: Update stock (PDO)
+    $update = $conn->prepare(
+        "UPDATE products SET quantity = :qty WHERE id = :id"
+    );
+    $update->execute([
+        ':qty' => $new_quantity,
+        ':id' => $product_id
+    ]);
 
-    // 2. Insert sale
-    $insert = $conn->prepare("INSERT INTO sales (product_id, branch_id, quantity, price_each, total_price) VALUES (?, ?, ?, ?, ?)");
-    $insert->bind_param("iiidd", $product_id, $branch_id, $sold_qty, $price_each, $total_price);
-    $insert->execute();
+    // ✅ FIX: Insert sale (PDO)
+    $insert = $conn->prepare(
+        "INSERT INTO sales 
+        (product_id, branch_id, quantity, price_each, total_price)
+        VALUES (:product_id, :branch_id, :quantity, :price_each, :total_price)"
+    );
+    $insert->execute([
+        ':product_id' => $product_id,
+        ':branch_id' => $branch_id,
+        ':quantity' => $sold_qty,
+        ':price_each' => $price_each,
+        ':total_price' => $total_price
+    ]);
 
     header("Location: products.php");
     exit;
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -61,7 +78,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <form method="POST">
     <div class="mb-3">
       <label>Quantity Sold (Available: <?= $product['quantity'] ?>)</label>
-      <input type="number" name="quantity" class="form-control" required max="<?= $product['quantity'] ?>">
+      <input type="number"
+             name="quantity"
+             class="form-control"
+             required
+             min="1"
+             max="<?= $product['quantity'] ?>">
     </div>
     <button class="btn btn-danger">Sell</button>
   </form>
