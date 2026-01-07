@@ -1,93 +1,103 @@
 <?php
 session_start();
 require '../includes/db.php';
-require_once 'navbar.php';
+require 'navbar.php';
 
+// Branch-only access
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'branch') {
     header("Location: ../login.php");
     exit;
 }
 
-$branch_id = $_SESSION['branch_id'];
-$product_id = intval($_GET['id']);
+$branch_id = $_SESSION['branch_id'] ?? null;
 
-// ✅ FIX: PDO product check
-$check = $conn->prepare(
-    "SELECT * FROM products 
-     WHERE id = :id AND branch_id = :branch_id AND status = 'approved'"
-);
-$check->execute([
-    ':id' => $product_id,
-    ':branch_id' => $branch_id
-]);
-
-$product = $check->fetch(PDO::FETCH_ASSOC);
-
-if (!$product) {
-    die("Product not found or not accessible.");
+if (!$branch_id) {
+    die("❌ Branch not linked. Please contact administrator.");
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $sold_qty = intval($_POST['quantity']);
-
-    if ($sold_qty > $product['quantity']) {
-        die("Cannot sell more than available quantity.");
-    }
-
-    $new_quantity = $product['quantity'] - $sold_qty;
-    $price_each = $product['price'];
-    $total_price = $sold_qty * $price_each;
-
-    // ✅ FIX: Update stock (PDO)
-    $update = $conn->prepare(
-        "UPDATE products SET quantity = :qty WHERE id = :id"
-    );
-    $update->execute([
-        ':qty' => $new_quantity,
-        ':id' => $product_id
-    ]);
-
-    // ✅ FIX: Insert sale (PDO)
-    $insert = $conn->prepare(
-        "INSERT INTO sales 
-        (product_id, branch_id, quantity, price_each, total_price)
-        VALUES (:product_id, :branch_id, :quantity, :price_each, :total_price)"
-    );
-    $insert->execute([
-        ':product_id' => $product_id,
-        ':branch_id' => $branch_id,
-        ':quantity' => $sold_qty,
-        ':price_each' => $price_each,
-        ':total_price' => $total_price
-    ]);
-
-    header("Location: products.php");
-    exit;
-}
+// Fetch all products for branch
+$stmt = $conn->prepare("
+    SELECT id, name, price, quantity, status
+    FROM products
+    WHERE branch_id = ?
+    ORDER BY id DESC
+");
+$stmt->execute([$branch_id]);
+$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Sell Product</title>
-  <link rel="stylesheet" href="css/bootstrap.min.css">
+    <title>Sell Products</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
 </head>
-<body>
-<div class="container mt-5">
-  <h4>Sell Product: <?= htmlspecialchars($product['name']) ?></h4>
-  <form method="POST">
-    <div class="mb-3">
-      <label>Quantity Sold (Available: <?= $product['quantity'] ?>)</label>
-      <input type="number"
-             name="quantity"
-             class="form-control"
-             required
-             min="1"
-             max="<?= $product['quantity'] ?>">
+
+<body class="bg-light">
+
+<div class="container py-4">
+    <h4 class="mb-3">🛒 Products</h4>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Product</th>
+                    <th>Price (RWF)</th>
+                    <th>Stock</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            <?php if (empty($products)): ?>
+                <tr>
+                    <td colspan="5" class="text-center text-muted">
+                        No products found
+                    </td>
+                </tr>
+            <?php endif; ?>
+
+            <?php foreach ($products as $product): ?>
+                <tr>
+                    <td><?= htmlspecialchars($product['name']) ?></td>
+                    <td><?= number_format($product['price'], 2) ?></td>
+                    <td><?= $product['quantity'] ?></td>
+
+                    <!-- STATUS BADGE -->
+                    <td>
+                        <?php if ($product['status'] === 'approved'): ?>
+                            <span class="badge bg-success">Approved</span>
+                        <?php elseif ($product['status'] === 'pending'): ?>
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        <?php else: ?>
+                            <span class="badge bg-danger">Rejected</span>
+                        <?php endif; ?>
+                    </td>
+
+                    <!-- ACTION -->
+                    <td>
+                        <?php if ($product['status'] === 'approved' && $product['quantity'] > 0): ?>
+                            <a href="sell_product.php?id=<?= $product['id'] ?>"
+                               class="btn btn-danger btn-sm">
+                                Sell
+                            </a>
+                        <?php elseif ($product['status'] === 'approved'): ?>
+                            <span class="text-muted">Out of stock</span>
+                        <?php else: ?>
+                            <span class="text-muted">Not allowed</span>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+
+        </table>
     </div>
-    <button class="btn btn-danger">Sell</button>
-  </form>
 </div>
-<script src="js/bootstrap.bundle.min.js"></script>
+
+<script src="../js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

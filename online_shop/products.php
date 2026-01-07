@@ -1,8 +1,13 @@
 <?php
 require '../includes/db.php';
 
-// Fetch all products
-$stmt = $conn->query("SELECT * FROM online_products ORDER BY created_at DESC");
+// Fetch all products with category names
+$stmt = $conn->query("
+    SELECT op.*, c.category_name 
+    FROM online_products op
+    LEFT JOIN categories c ON op.category_id = c.id
+    ORDER BY op.created_at DESC
+");
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -13,11 +18,10 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Manage Products</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
   <style>
     body {
-      background-color: #f7f9fc;
-      overflow-x: hidden;
+      background-color: #121212;
+      color: #fff;
     }
     .header {
       display: flex;
@@ -52,50 +56,53 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
       font-size: 0.8rem;
     }
     .card {
+      background: #1e1e1e;
       border: none;
       border-radius: 12px;
     }
-    .card-body {
-      overflow-x: auto;
+    .table {
+      color: #fff;
     }
-
-    /* 📱 Responsive styling for mobile screens */
+    .table-dark {
+      background-color: #2c2c2c;
+    }
+    .table-hover tbody tr:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    .category-badge {
+      background: rgba(255, 193, 7, 0.1);
+      color: #ffc107;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+    }
     @media (max-width: 768px) {
       .header {
         flex-direction: column;
         align-items: flex-start;
       }
-
       h3 {
         font-size: 1.3rem;
       }
-
-      /* Make the table scrollable instead of squeezed */
       .table-responsive {
         border-radius: 10px;
         overflow-x: auto;
       }
-
       table {
         font-size: 0.9rem;
       }
-
       table th, table td {
         white-space: nowrap;
       }
-
       .btn {
         font-size: 0.8rem;
         padding: 4px 8px;
       }
-
       img {
         width: 55px;
         height: 55px;
       }
     }
-
-    /* 🧾 For very small phones */
     @media (max-width: 480px) {
       .btn-add {
         width: 100%;
@@ -135,9 +142,11 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <th>#</th>
               <th>Image</th>
               <th>Name</th>
+              <th>Category</th>
               <th>Price</th>
               <th>Discount</th>
               <th>Added On</th>
+              <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -146,13 +155,42 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <?php foreach ($products as $index => $product): ?>
                 <tr>
                   <td><?= $index + 1 ?></td>
-                  <td><img src="uploads/<?= htmlspecialchars($product['image']) ?>" alt="Product"></td>
-                  <td><?= htmlspecialchars($product['name']) ?></td>
-                  <td>RWF <?= number_format($product['price']) ?></td>
-                  <td><?= $product['discount'] ? $product['discount'] . '%' : '—' ?></td>
+                  <td>
+                      <img src="uploads/<?= htmlspecialchars($product['image']) ?>" 
+                           alt="<?= htmlspecialchars($product['name']) ?>">
+                  </td>
+                  <td>
+                      <?= htmlspecialchars($product['name']) ?>
+                      <?php if ($product['is_new'] == 1): ?>
+                          <span class="badge bg-danger ms-1">NEW</span>
+                      <?php endif; ?>
+                  </td>
+                  <td>
+                      <?php if ($product['category_name']): ?>
+                          <span class="category-badge"><?= htmlspecialchars($product['category_name']) ?></span>
+                      <?php else: ?>
+                          <span class="text-muted">No category</span>
+                      <?php endif; ?>
+                  </td>
+                  <td>RWF <?= number_format($product['price'], 0) ?></td>
+                  <td>
+                      <?php if ($product['discount'] > 0): ?>
+                          <span class="text-success"><?= $product['discount'] ?>%</span>
+                      <?php else: ?>
+                          <span class="text-muted">—</span>
+                      <?php endif; ?>
+                  </td>
                   <td><?= date("M d, Y", strtotime($product['created_at'])) ?></td>
                   <td>
-                    <a href="product_edit.php?id=<?= $product['id'] ?>" class="btn btn-sm btn-primary">Edit</a>
+                      <?php if ($product['discount'] > 0): ?>
+                          <span class="badge bg-warning">On Sale</span>
+                      <?php else: ?>
+                          <span class="badge bg-secondary">Regular</span>
+                      <?php endif; ?>
+                  </td>
+                  <td>
+                    <a href="product_edit.php?id=<?= $product['id'] ?>" 
+                       class="btn btn-sm btn-primary">Edit</a>
                     <a href="product_delete.php?id=<?= $product['id'] ?>" 
                        class="btn btn-sm btn-danger"
                        onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
@@ -161,7 +199,9 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <?php endforeach; ?>
             <?php else: ?>
               <tr>
-                <td colspan="7" class="text-center text-muted">No products found.</td>
+                <td colspan="9" class="text-center text-muted py-4">
+                  No products found. <a href="admin_add_product.php" class="text-warning">Add your first product</a>
+                </td>
               </tr>
             <?php endif; ?>
           </tbody>
@@ -169,9 +209,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
       </div>
     </div>
   </div>
-   <?php
-    include '../includes/footer.php';
-    
-    ?>
+   
+  <?php include '../includes/footer.php'; ?>
 </body>
 </html>
